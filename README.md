@@ -26,7 +26,6 @@ This application will be targeted at the Operating Systems subject commissioned 
 
 # Slovník pojmov
 
-## Slovník pojmov
 
 | Pojem              | Anglický názov | Definícia |
 |--------------------|---------------|-----------|
@@ -47,3 +46,4 @@ This application will be targeted at the Operating Systems subject commissioned 
 | **Notifikácia**   | Notification  | Upozornenie pre používateľa o nových testoch, úlohách alebo príspevkoch na fóre. |
 | **Konto**         | Account       | Identita používateľa v systéme, používaná na prihlásenie a prístup k obsahu. |
 | **Záznam**        | Recording     | Uložené video z výučby, ktoré môžu študenti sledovať neskôr. |
+| **Test Case**     | Test Case     | Špecifikácia testovacieho scenára, ktorý definuje vstupné dáta, očakávaný výsledok a kroky potrebné na otestovanie funkcionality systému. |
