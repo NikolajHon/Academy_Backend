@@ -3,9 +3,9 @@ This application will be targeted at the Operating Systems subject commissioned 
 
 
 #Zber požiadaviek
--**RQ01** Používateľ sa môže zaregistrovať poštou a dostať potvrdenie o registrácii poštou.
--**RQ02** Systém by mal podporovať registráciu a autorizáciu používateľov s rozlíšením rolí (študent, učiteľ).
--**RQ03** Inštruktori by mali mať možnosť obmedziť prístup študentov k niektorým materiálom.
--**RQ04** Používatelia by mali mať možnosť prehliadať materiály k vybranej lekcii.
--**RQ05** Učitelia by mali mať možnosť pridať alebo odstrániť otázky ku každej lekcii.
--**RQ06** Študenti by mali mať možnosť po každej prednáške absolvovať testy od učiteľov. 
+- **RQ01** Používateľ sa môže zaregistrovať poštou a dostať potvrdenie o registrácii poštou.
+- **RQ02** Systém by mal podporovať registráciu a autorizáciu používateľov s rozlíšením rolí (študent, učiteľ).
+- **RQ03** Inštruktori by mali mať možnosť obmedziť prístup študentov k niektorým materiálom.
+- **RQ04** Používatelia by mali mať možnosť prehliadať materiály k vybranej lekcii.
+- **RQ05** Učitelia by mali mať možnosť pridať alebo odstrániť otázky ku každej lekcii.
+- **RQ06** Študenti by mali mať možnosť po každej prednáške absolvovať testy od učiteľov. 
