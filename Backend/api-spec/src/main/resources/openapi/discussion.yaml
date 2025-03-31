@@ -1,0 +1,66 @@
+openapi: 3.0.0
+info:
+  title: Študentské fórum FSA
+  version: 1.0.0
+  description: API pre správu diskusných príspevkov.
+
+paths:
+  /courses:
+    get:
+      summary: Get all courses
+      operationId: getAllCourses
+      tags:
+        - Course
+      responses:
+        '200':
+          description: List of courses
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CoursesResponse'
+
+    post:
+      summary: Create new course
+      operationId: createCourse
+      tags:
+        - Course
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCourseRequest'
+      responses:
+        '201':
+          description: Course created
+
+components:
+  schemas:
+    CreateCourseRequest:
+      type: object
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+
+    Course:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+
+    CoursesResponse:
+      type: object
+      properties:
+        courses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Course'
