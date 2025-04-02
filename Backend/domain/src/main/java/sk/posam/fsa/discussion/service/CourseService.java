@@ -2,25 +2,28 @@ package sk.posam.fsa.discussion.service;
 
 import sk.posam.fsa.discussion.Course;
 import sk.posam.fsa.discussion.CourseRepository;
-import sk.posam.fsa.discussion.rest.dto.CreateCourseRequestDto;
 
 import java.util.Collection;
-import java.util.List;
 
 public class CourseService implements CourseFacade{
-    private final CourseRepository repository;
+    private final CourseRepository courseRepository;
 
     public CourseService(CourseRepository repository) {
-        this.repository = repository;
+        this.courseRepository = repository;
+    }
+
+    @Override
+    public Course getCourse(Long courseId) {
+        return courseRepository.getCourse(courseId);
     }
 
     @Override
     public Collection<Course> readAll() {
-        return repository.findAll();
+        return courseRepository.findAll();
     }
 
     @Override
     public void create(Course course) {
-        repository.create(course);
+        courseRepository.create(course);
     }
 }

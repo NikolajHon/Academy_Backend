@@ -24,4 +24,9 @@ public class JpaCourserRepositoryAdapter implements CourseRepository {
     public List<Course> findAll() {
         return courseSpringDataRepository.findAll();
     }
+
+    @Override
+    public Course getCourse(Long courseId) {
+        return courseSpringDataRepository.getReferenceById(courseId);
+    }
 }

@@ -75,6 +75,60 @@ paths:
         '404':
           description: Course not found
 
+  /users:
+    get:
+      summary: Get all users
+      operationId: getAllUsers
+      tags:
+        - User
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsersResponse'
+
+    post:
+      summary: Create a new user
+      operationId: createUser
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '201':
+          description: User created
+
+  /users/{userId}/courses/{courseId}:
+    post:
+      summary: Enroll user to course
+      operationId: enrollUserToCourse
+      tags:
+        - User
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: courseId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: User enrolled to course
+        '404':
+          description: User or Course not found
+
 components:
   schemas:
     CreateCourseRequest:
@@ -103,6 +157,27 @@ components:
           type: integer
           format: int64
 
+    CreateUserRequest:
+      type: object
+      required:
+        - givingName
+        - familyName
+        - email
+        - password
+        - role
+      properties:
+        givingName:
+          type: string
+        familyName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+          enum: [Student, Teacher]
+
     Lesson:
       type: object
       properties:
@@ -126,6 +201,29 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Lesson'
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+
+    User:
+      type: object
+      properties:
+        givingName:
+          type: string
+        familyName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+          enum: [Student, Teacher]
+        courses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Course'
 
     CoursesResponse:
       type: object
@@ -134,3 +232,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Course'
+
+    UsersResponse:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'

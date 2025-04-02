@@ -42,5 +42,4 @@ public class Course {
         this.name = name;
     }
 
-    // геттери, сеттери
 }
