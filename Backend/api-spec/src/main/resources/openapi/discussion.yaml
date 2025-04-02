@@ -34,6 +34,47 @@ paths:
         '201':
           description: Course created
 
+  /lessons:
+    post:
+      summary: Create new lesson
+      operationId: createLesson
+      tags:
+        - Lesson
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLessonRequest'
+      responses:
+        '201':
+          description: Lesson created
+
+  /courses/{id}/lessons:
+    get:
+      summary: Get lessons by course ID
+      operationId: getLessonsByCourseId
+      tags:
+        - Lesson
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: List of lessons for the course
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Lesson'
+        '404':
+          description: Course not found
+
 components:
   schemas:
     CreateCourseRequest:
@@ -47,6 +88,31 @@ components:
         description:
           type: string
 
+    CreateLessonRequest:
+      type: object
+      required:
+        - title
+        - content
+        - courseId
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        courseId:
+          type: integer
+          format: int64
+
+    Lesson:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        content:
+          type: string
+
     Course:
       type: object
       properties:
@@ -56,6 +122,10 @@ components:
           type: string
         description:
           type: string
+        lessons:
+          type: array
+          items:
+            $ref: '#/components/schemas/Lesson'
 
     CoursesResponse:
       type: object

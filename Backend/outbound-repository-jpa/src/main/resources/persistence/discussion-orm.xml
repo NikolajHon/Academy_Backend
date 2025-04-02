@@ -7,6 +7,25 @@
 
     <package>sk.posam.fsa.discussion</package>
 
+    <entity class="Lesson" access="PROPERTY">
+        <table name="lesson"/>
+        <attributes>
+            <id name="id">
+                <column name="id"/>
+                <generated-value strategy="AUTO"/>
+            </id>
+            <basic name="title">
+                <column name="title" nullable="false" length="255"/>
+            </basic>
+            <basic name="content">
+                <column name="content" length="1000"/>
+            </basic>
+            <many-to-one name="course">
+                <join-column name="course_id" nullable="false"/>
+            </many-to-one>
+        </attributes>
+    </entity>
+
     <entity class="Course" access="PROPERTY">
         <table name="course" />
         <attributes>
@@ -20,7 +39,9 @@
             <basic name="description">
                 <column name="description" length="1000"/>
             </basic>
+            <one-to-many name="lessons" mapped-by="course" fetch="EAGER" />
         </attributes>
     </entity>
+
 
 </entity-mappings>

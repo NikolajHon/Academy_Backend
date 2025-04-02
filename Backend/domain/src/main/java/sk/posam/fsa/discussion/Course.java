@@ -1,9 +1,22 @@
 package sk.posam.fsa.discussion;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Course {
     private Long id;
     private String name;
     private String description;
+    private List<Lesson> lessons = new ArrayList<>();
+
+    public List<Lesson> getLessons() {
+        return lessons;
+    }
+
+    public void setLessons(List<Lesson> lessons) {
+        this.lessons = lessons;
+    }
+
 
     public String getDescription() {
         return description;
