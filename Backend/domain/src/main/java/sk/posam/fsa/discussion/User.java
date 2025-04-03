@@ -7,7 +7,6 @@ public class User {
     private String givingName;
     private String familyName;
     private String email;
-    private String password;
     private UserRole role;
     private List<Course> courses;
 
@@ -44,14 +43,6 @@ public class User {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public UserRole getRole() {

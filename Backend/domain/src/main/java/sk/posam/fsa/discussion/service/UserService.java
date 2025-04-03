@@ -36,7 +36,6 @@ public class UserService implements UserFacade {
 
     @Override
     public void create(User user) {
-        user.setPassword(user.getPassword());
         userRepository.create(user);
     }
     @Override

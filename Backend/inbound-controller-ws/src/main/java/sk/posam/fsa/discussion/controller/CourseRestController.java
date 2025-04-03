@@ -12,7 +12,6 @@ import sk.posam.fsa.discussion.rest.api.CoursesApi;
 import sk.posam.fsa.discussion.rest.dto.*;
 import sk.posam.fsa.discussion.security.CurrentUserDetailService;
 import sk.posam.fsa.discussion.service.CourseFacade;
-import sk.posam.fsa.discussion.service.CourseService;
 
 import java.util.Collection;
 import java.util.List;
@@ -38,6 +37,11 @@ public class CourseRestController implements CoursesApi {
     @Override
     public ResponseEntity<Void> createCourse(CreateCourseRequestDto createCourseRequestDto) {
         UserDto user = currentUserDetailService.getCurrentUser();
+
+
+        if (!UserDto.RoleEnum.TEACHER.equals(user.getRole())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only teachers can create courses.");
+        }
         System.out.println("Creating course by user: " + user.getEmail());
 
         Course course = new Course();
@@ -72,5 +76,4 @@ public class CourseRestController implements CoursesApi {
 
         return ResponseEntity.ok(lessonDtos);
     }
-
 }

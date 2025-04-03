@@ -163,7 +163,6 @@ components:
         - givingName
         - familyName
         - email
-        - password
         - role
       properties:
         givingName:
@@ -171,8 +170,6 @@ components:
         familyName:
           type: string
         email:
-          type: string
-        password:
           type: string
         role:
           type: string
@@ -202,7 +199,6 @@ components:
           items:
             $ref: '#/components/schemas/Lesson'
 
-
     User:
       type: object
       properties:
@@ -211,8 +207,6 @@ components:
         familyName:
           type: string
         email:
-          type: string
-        password:
           type: string
         role:
           type: string
