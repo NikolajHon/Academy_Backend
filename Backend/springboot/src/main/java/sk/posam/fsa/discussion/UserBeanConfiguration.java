@@ -11,8 +11,7 @@ public class UserBeanConfiguration {
 
     @Bean
     public UserFacade userFacade(UserRepository userRepository,
-                                 PasswordEncoder passwordEncoder,
                                  CourseRepository courseRepository) {
-        return new UserService(userRepository, passwordEncoder, courseRepository);
+        return new UserService(userRepository, courseRepository);
     }
 }

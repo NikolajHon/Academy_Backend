@@ -14,6 +14,16 @@ spring:
     mapping-resources:
       - persistence/discussion-orm.xml
 
+  profiles:
+    active: keycloak
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8081/realms/akademia_project
+          jwk-set-uri: http://localhost:8081/realms/akademia_project/protocol/openid-connect/certs
+
 logging:
   level:
     org.hibernate.SQL: DEBUG

@@ -12,12 +12,10 @@ import java.util.Optional;
 
 public class UserService implements UserFacade {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final CourseRepository courseRepository;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, CourseRepository courseRepository) {
+    public UserService(UserRepository userRepository, CourseRepository courseRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
         this.courseRepository = courseRepository;
     }
 
@@ -38,8 +36,7 @@ public class UserService implements UserFacade {
 
     @Override
     public void create(User user) {
-        String hashedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(hashedPassword);
+        user.setPassword(user.getPassword());
         userRepository.create(user);
     }
     @Override

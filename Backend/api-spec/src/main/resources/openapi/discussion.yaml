@@ -201,10 +201,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Lesson'
-        users:
-          type: array
-          items:
-            $ref: '#/components/schemas/User'
+
 
     User:
       type: object
