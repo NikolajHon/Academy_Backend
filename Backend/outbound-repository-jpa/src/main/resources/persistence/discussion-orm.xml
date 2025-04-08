@@ -78,6 +78,40 @@
             </many-to-many>
         </attributes>
     </entity>
+    <!-- Answer -->
+    <entity class="Answer" access="PROPERTY">
+        <table name="answer"/>
+        <attributes>
+            <id name="id">
+                <column name="id"/>
+                <generated-value strategy="IDENTITY"/>
+            </id>
+            <basic name="answer_body">
+                <column name="answer_body" length="1000"/>
+            </basic>
+        </attributes>
+    </entity>
+
+    <!-- Question -->
+    <entity class="Question" access="PROPERTY">
+        <table name="question"/>
+        <attributes>
+            <id name="id">
+                <column name="id"/>
+                <generated-value strategy="IDENTITY"/>
+            </id>
+            <basic name="question_body">
+                <column name="question_body" length="1000"/>
+            </basic>
+            <one-to-one name="answer" optional="true">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+                <join-column name="answer_id"/>
+            </one-to-one>
+        </attributes>
+    </entity>
+
 
 
 </entity-mappings>
