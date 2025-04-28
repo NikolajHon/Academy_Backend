@@ -4,6 +4,9 @@ import org.springframework.stereotype.Repository;
 import sk.posam.fsa.discussion.Lesson;
 import sk.posam.fsa.discussion.LessonRepository;
 
+import java.util.List;
+import java.util.Optional;
+
 @Repository
 public class JpaLessonRepositoryAdapter implements LessonRepository {
 
@@ -16,5 +19,15 @@ public class JpaLessonRepositoryAdapter implements LessonRepository {
     @Override
     public Lesson save(Lesson lesson) {
         return springDataRepository.save(lesson);
+    }
+
+    @Override
+    public List<Lesson> findAll() {
+        return springDataRepository.findAll();
+    }
+
+    @Override
+    public Optional<Lesson> findById(Long id) {
+        return springDataRepository.findById(id);
     }
 }

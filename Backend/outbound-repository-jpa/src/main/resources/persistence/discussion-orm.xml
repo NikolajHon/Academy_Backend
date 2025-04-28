@@ -1,13 +1,42 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                 xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm
-                                     http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
-                 version="2.0">
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+        xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://xmlns.jcp.org/xml/ns/persistence/orm
+        http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+        version="2.1">
 
     <package>sk.posam.fsa.discussion</package>
 
-    <!-- Lesson -->
+    <!-- Assignment: связь Many-To-One на Lesson -->
+    <entity class="Assignment" access="PROPERTY">
+        <table name="assignment"/>
+        <attributes>
+            <id name="id">
+                <column name="id"/>
+                <generated-value strategy="IDENTITY"/>
+            </id>
+            <basic name="description">
+                <column name="description" nullable="false" length="1000"/>
+            </basic>
+            <basic name="templateCode">
+                <column name="template_code" length="4000"/>
+            </basic>
+            <basic name="expectedOutput">
+                <column name="expected_output" length="2000"/>
+            </basic>
+            <basic name="outputType">
+                <column name="output_type" nullable="false"/>
+            </basic>
+            <!-- теперь у нас есть в Assignment поле lesson -->
+            <many-to-one name="lesson" fetch="LAZY">
+                <join-column name="lesson_id" nullable="false"/>
+            </many-to-one>
+        </attributes>
+    </entity>
+
+    <!-- Lesson: связь One-To-Many на Assignment -->
     <entity class="Lesson" access="PROPERTY">
         <table name="lesson"/>
         <attributes>
@@ -21,12 +50,16 @@
             <basic name="content">
                 <column name="content" length="1000"/>
             </basic>
-            <many-to-one name="course">
+            <many-to-one name="course" fetch="EAGER">
                 <join-column name="course_id" nullable="false"/>
             </many-to-one>
+            <one-to-many name="assignments" mapped-by="lesson" fetch="LAZY" orphan-removal="true">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
         </attributes>
     </entity>
-
     <!-- Course -->
     <entity class="Course" access="PROPERTY">
         <table name="course"/>

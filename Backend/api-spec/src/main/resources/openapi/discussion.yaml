@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: Študentské fórum FSA
   version: 1.0.0
-  description: API pre správu diskusných príspevkov.
+  description: API pre správu diskusných príspevkov a úloh k lekciám.
 
 paths:
   /courses:
@@ -18,7 +18,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CoursesResponse'
-
     post:
       summary: Create new course
       operationId: createCourse
@@ -33,22 +32,6 @@ paths:
       responses:
         '201':
           description: Course created
-
-  /lessons:
-    post:
-      summary: Create new lesson
-      operationId: createLesson
-      tags:
-        - Lesson
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateLessonRequest'
-      responses:
-        '201':
-          description: Lesson created
 
   /courses/{id}/lessons:
     get:
@@ -75,6 +58,139 @@ paths:
         '404':
           description: Course not found
 
+  /lessons:
+    post:
+      summary: Create new lesson
+      operationId: createLesson
+      tags:
+        - Lesson
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLessonRequest'
+      responses:
+        '201':
+          description: Lesson created
+
+  /lessons/{lessonId}/assignments:
+    get:
+      summary: Get assignments for a lesson
+      operationId: getAssignmentsByLesson
+      tags:
+        - Assignment
+      parameters:
+        - name: lessonId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: List of assignments for the lesson
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Assignment'
+        '404':
+          description: Lesson not found
+    post:
+      summary: Create new assignment under a lesson
+      operationId: createAssignment
+      tags:
+        - Assignment
+      parameters:
+        - name: lessonId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAssignmentRequest'
+      responses:
+        '201':
+          description: Assignment created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+
+  /assignments/{assignmentId}:
+    get:
+      summary: Get an assignment by ID
+      operationId: getAssignmentById
+      tags:
+        - Assignment
+      parameters:
+        - name: assignmentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Assignment details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+        '404':
+          description: Assignment not found
+    put:
+      summary: Update an assignment
+      operationId: updateAssignment
+      tags:
+        - Assignment
+      parameters:
+        - name: assignmentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAssignmentRequest'
+      responses:
+        '200':
+          description: Assignment updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+        '404':
+          description: Assignment not found
+    delete:
+      summary: Delete an assignment
+      operationId: deleteAssignment
+      tags:
+        - Assignment
+      parameters:
+        - name: assignmentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Assignment deleted
+        '404':
+          description: Assignment not found
+
   /users:
     get:
       summary: Get all users
@@ -88,7 +204,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UsersResponse'
-
     post:
       summary: Create a new user
       operationId: createUser
@@ -99,7 +214,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateUserRequest'
+              $ref: '#/components/schemas/CreateUserRequest'   # ← тут ссылка!
       responses:
         '201':
           description: User created
@@ -179,23 +294,56 @@ components:
           type: integer
           format: int64
 
-    CreateUserRequest:
+    CreateAssignmentRequest:
       type: object
       required:
-        - givingName
-        - familyName
-        - email
-        - role
+        - description
+        - templateCode
+        - expectedOutput
+        - outputType
       properties:
-        givingName:
+        description:
           type: string
-        familyName:
+        templateCode:
           type: string
-        email:
+        expectedOutput:
           type: string
-        role:
+        outputType:
+          $ref: '#/components/schemas/AssignmentOutputType'
+
+    UpdateAssignmentRequest:
+      allOf:
+        - $ref: '#/components/schemas/CreateAssignmentRequest'
+        - type: object
+          required:
+            - id
+          properties:
+            id:
+              type: integer
+              format: int64
+
+    Assignment:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        description:
           type: string
-          enum: [Student, Teacher]
+        templateCode:
+          type: string
+        expectedOutput:
+          type: string
+        outputType:
+          $ref: '#/components/schemas/AssignmentOutputType'
+
+    AssignmentOutputType:
+      type: string
+      enum:
+        - STRING
+        - INT
+        - JSON
+      description: Тип ожидаемого вывода для автоматической проверки
 
     Lesson:
       type: object
@@ -206,6 +354,9 @@ components:
           type: string
         content:
           type: string
+        courseId:
+          type: integer
+          format: int64
 
     Course:
       type: object
@@ -221,6 +372,26 @@ components:
           items:
             $ref: '#/components/schemas/Lesson'
 
+    CreateUserRequest:                                 # ← вот он
+      type: object
+      required:
+        - givingName
+        - familyName
+        - email
+        - role
+      properties:
+        givingName:
+          type: string
+        familyName:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum:
+            - Student
+            - Teacher
+
     User:
       type: object
       properties:
@@ -235,7 +406,9 @@ components:
           type: string
         role:
           type: string
-          enum: [Student, Teacher]
+          enum:
+            - Student
+            - Teacher
         rating:
           type: integer
           format: int32

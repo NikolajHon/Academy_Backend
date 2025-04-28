@@ -1,6 +1,7 @@
 package sk.posam.fsa.discussion.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import sk.posam.fsa.discussion.Course;
 import sk.posam.fsa.discussion.Lesson;
 import sk.posam.fsa.discussion.rest.dto.CourseDto;
@@ -12,11 +13,12 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface CourseMapper {
 
-    CourseDto toDto(Course course);
-
-    List<CourseDto> toDto(Collection<Course> courses);
-
+    @Mapping(target = "courseId", source = "course.id")  // <<< ОБЯЗАТЕЛЬНО
     LessonDto toDto(Lesson lesson);
 
     List<LessonDto> toDto(List<Lesson> lessons);
+
+    CourseDto toDto(Course course);
+
+    List<CourseDto> toDto(Collection<Course> courses);
 }

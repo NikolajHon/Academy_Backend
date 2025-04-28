@@ -9,7 +9,11 @@ import sk.posam.fsa.discussion.service.LessonService;
 public class LessonBeanConfiguration {
 
     @Bean
-    public LessonFacade lessonFacade(LessonRepository lessonRepository, CourseRepository courseRepository) {
-        return new LessonService(lessonRepository, courseRepository);
+    public LessonFacade lessonFacade(LessonRepository lessonRepository,
+                                     CourseRepository courseRepository,
+                                     AssignmentRepository assignmentRepository) {
+        return new LessonService(lessonRepository,
+                courseRepository,
+                assignmentRepository);
     }
 }

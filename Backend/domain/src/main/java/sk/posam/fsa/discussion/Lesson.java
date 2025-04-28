@@ -1,10 +1,14 @@
 package sk.posam.fsa.discussion;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Lesson {
     private Long id;
     private String title;
     private String content;
     private Course course;
+    private List<Assignment> assignments = new ArrayList<>();
 
     public Long getId() { return id; }
 
@@ -21,4 +25,13 @@ public class Lesson {
     public Course getCourse() { return course; }
 
     public void setCourse(Course course) { this.course = course; }
+
+    public List<Assignment> getAssignments() {
+        return assignments;
+    }
+
+    public void setAssignments(List<Assignment> assignments) {
+        this.assignments = assignments;
+    }
+
 }

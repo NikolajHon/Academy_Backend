@@ -54,13 +54,46 @@ public class CourseRestController implements CoursesApi {
     @Override
     public ResponseEntity<CoursesResponseDto> getAllCourses() {
         Collection<Course> courses = courseFacade.readAll();
-        List<CourseDto> courseDtos = courseMapper.toDto(courses);
+
+        System.out.println("=== Loaded Courses ===");
+        for (Course course : courses) {
+            System.out.println("Course ID: " + course.getId() + ", Name: " + course.getName());
+            if (course.getLessons() != null) {
+                for (Lesson lesson : course.getLessons()) {
+                    System.out.println("  -> Lesson ID: " + lesson.getId() +
+                            ", Title: " + lesson.getTitle() +
+                            ", Course ID inside lesson: " +
+                            (lesson.getCourse() != null ? lesson.getCourse().getId() : "NULL"));
+                }
+            } else {
+                System.out.println("  -> No lessons found.");
+            }
+        }
+        System.out.println("=======================");
+
+        List<CourseDto> courseDto = courseMapper.toDto(courses);
+
+        System.out.println("=== Mapped Course DTOs ===");
+        for (CourseDto dto : courseDto) {
+            System.out.println("CourseDto ID: " + dto.getId() + ", Name: " + dto.getName());
+            if (dto.getLessons() != null) {
+                for (var lessonDto : dto.getLessons()) {
+                    System.out.println("  -> LessonDto ID: " + lessonDto.getId() +
+                            ", Title: " + lessonDto.getTitle() +
+                            ", courseId: " + lessonDto.getCourseId());
+                }
+            } else {
+                System.out.println("  -> No lessons found in DTO.");
+            }
+        }
+        System.out.println("==========================");
 
         CoursesResponseDto response = new CoursesResponseDto();
-        response.setCourses(courseDtos);
+        response.setCourses(courseDto);
 
         return ResponseEntity.ok(response);
     }
+
 
     @Override
     public ResponseEntity<List<LessonDto>> getLessonsByCourseId(Long id) {
