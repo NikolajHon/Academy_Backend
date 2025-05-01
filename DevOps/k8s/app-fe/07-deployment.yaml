@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fsa-frontend
+  namespace: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fsa-frontend
+  template:
+    metadata:
+      labels:
+        app: fsa-frontend
+    spec:
+      containers:
+      - name: fsa-frontend
+        image: fsahoncharenkoregistry.azurecr.io/fsa-frontend:latest
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 80
+        resources:
+          requests:
+            cpu: 50m
+            memory: 100Mi
+          limits:
+            cpu: 200m
+            memory: 200Mi

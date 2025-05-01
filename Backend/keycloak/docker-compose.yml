@@ -1,19 +1,17 @@
+version: "3.8"
+
 services:
   keycloak:
-    image: quay.io/keycloak/keycloak:26.0.7
-    container_name: keycloak
+    image: fsahoncharenkoregistry.azurecr.io/fsa-keycloak:latest
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
+
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://fsa-honcharenko-psql.postgres.database.azure.com:5432/keycloak
+      KC_DB_USERNAME: fsaadmin@fsa-honcharenko-psql
+      KC_DB_PASSWORD: P@ssword12345
+
       KC_LOG_LEVEL: INFO
-    command: ["start-dev"]
     ports:
       - "8081:8080"
-    volumes:
-      - ./keycloak-providers:/opt/keycloak/providers
-    networks:
-      - fsa-network
-
-networks:
-  fsa-network:
-    driver: bridge

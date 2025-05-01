@@ -1,0 +1,16 @@
+{
+  "realm": "Academia_project",
+  "enabled": true,
+  "roles": {
+    "realm": [
+      {
+        "name": "Student"
+      },
+      {
+        "name": "Teacher"
+      }
+    ]
+  },
+  "clients": [],
+  "users": []
+}

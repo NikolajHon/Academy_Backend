@@ -27,6 +27,7 @@ public class UserRestController implements UsersApi {
 
     @Override
     public ResponseEntity<Void> createUser(CreateUserRequestDto dto) {
+        System.out.println("we are creating user");
         User user = userMapper.toEntity(dto);
         userFacade.create(user);
         return ResponseEntity.status(HttpStatus.CREATED).build();
