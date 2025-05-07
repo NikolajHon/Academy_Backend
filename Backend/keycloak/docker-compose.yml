@@ -13,5 +13,13 @@ services:
       KC_DB_PASSWORD: P@ssword12345
 
       KC_LOG_LEVEL: INFO
+      KC_HTTP_RELATIVE_PATH: /auth
+
+      KC_PROXY: edge
+      KC_HTTP_ENABLED: "false"
+      KC_HOSTNAME: 20.223.168.156.nip.io
+      KC_HOSTNAME_URL: https://20.223.168.156.nip.io
+      KC_HOSTNAME_ADMIN_URL: https://20.223.168.156.nip.io/auth
+
     ports:
       - "8081:8080"

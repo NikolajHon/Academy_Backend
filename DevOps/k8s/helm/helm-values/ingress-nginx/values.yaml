@@ -449,7 +449,7 @@ controller:
     # FSA zmenit na svoju hodnotu - nazov svojej Public IP a Resource Group, v ktorej sa nachadza
     annotations:
       service.beta.kubernetes.io/azure-load-balancer-resource-group: "mc_fsa-aks"
-      service.beta.kubernetes.io/azure-pip-name: "pip-fsa-pieterr"
+      service.beta.kubernetes.io/azure-pip-name: "pip-fsa-honcharenko"
     labels: {}
     # clusterIP: ""
 

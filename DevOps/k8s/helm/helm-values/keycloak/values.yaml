@@ -9,9 +9,9 @@ replicas: 1
 
 image:
   # The Keycloak image repository
-  repository: fsapieterrregistry.azurecr.io/fsa-keycloak
+  repository: fsahoncharenkoregistry.azurecr.io/fsa-keycloak
   # Overrides the Keycloak image tag whose default is the chart appVersion
-  tag: "23.0"
+  tag: "latest"
   # Overrides the Keycloak image tag with a specific digest
   digest: ""
   # The Keycloak image pull policy
@@ -426,7 +426,7 @@ database:
   existingSecretKey: "db_password"
   # E.g. dev-file, dev-mem, mariadb, mssql, mysql, oracle or postgres
   vendor: postgres
-  hostname: fsa-pieterr-psql.postgres.database.azure.com
+  hostname: fsa-honcharenko-psql.postgres.database.azure.com
   port: 5432
   database: keycloak
   username: fsaadmin

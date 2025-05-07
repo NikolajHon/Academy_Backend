@@ -1,3 +1,7 @@
+server:
+  servlet:
+    context-path: /api
+
 spring:
   datasource:
     url: jdbc:postgresql://fsa-honcharenko-psql.postgres.database.azure.com:5432/fsa-db?sslmode=require
@@ -21,8 +25,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri:   http://172.205.72.71/realms/Academia_project
-          jwk-set-uri:  http://172.205.72.71/realms/Academia_project/protocol/openid-connect/certs
+          issuer-uri: https://20.223.168.156.nip.io/auth/realms/Academia_project
+          jwk-set-uri: https://20.223.168.156.nip.io/auth/realms/Academia_project/protocol/openid-connect/certs
 
 logging:
   level:

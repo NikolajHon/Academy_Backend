@@ -1,13 +1,14 @@
+# fsa-frontend-svc.yaml
 apiVersion: v1
 kind: Service
 metadata:
   name: fsa-frontend-svc
   namespace: app
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: fsa-frontend
   ports:
-  - name: http
-    port: 80
-    targetPort: 80
+    - name: http
+      port: 80
+      targetPort: 80
