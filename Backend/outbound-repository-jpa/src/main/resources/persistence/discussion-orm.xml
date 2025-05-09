@@ -9,7 +9,6 @@
 
     <package>sk.posam.fsa.discussion</package>
 
-    <!-- Assignment: связь Many-To-One на Lesson -->
     <entity class="Assignment" access="PROPERTY">
         <table name="assignment"/>
         <attributes>
@@ -23,15 +22,41 @@
             <basic name="templateCode">
                 <column name="template_code" length="4000"/>
             </basic>
+            <basic name="teacherCode">
+                <column name="teacher_code" nullable="true" length="4000"/>
+            </basic>
             <basic name="expectedOutput">
                 <column name="expected_output" length="2000"/>
             </basic>
             <basic name="outputType">
                 <column name="output_type" nullable="false"/>
             </basic>
-            <!-- теперь у нас есть в Assignment поле lesson -->
             <many-to-one name="lesson" fetch="LAZY">
                 <join-column name="lesson_id" nullable="false"/>
+            </many-to-one>
+            <one-to-many name="testCases" mapped-by="assignment" fetch="LAZY" orphan-removal="true">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
+        </attributes>
+    </entity>
+
+    <entity class="TestCase" access="PROPERTY">
+        <table name="test_case"/>
+        <attributes>
+            <id name="id">
+                <column name="id"/>
+                <generated-value strategy="IDENTITY"/>
+            </id>
+            <basic name="input">
+                <column name="input" nullable="false" length="2000"/>
+            </basic>
+            <basic name="expectedOutput">
+                <column name="expected_output" nullable="false" length="2000"/>
+            </basic>
+            <many-to-one name="assignment" fetch="LAZY">
+                <join-column name="assignment_id" nullable="false"/>
             </many-to-one>
         </attributes>
     </entity>

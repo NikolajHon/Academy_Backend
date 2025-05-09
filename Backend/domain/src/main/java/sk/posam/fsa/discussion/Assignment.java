@@ -1,12 +1,17 @@
 package sk.posam.fsa.discussion;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Assignment {
     private Long id;
     private String description;
     private String templateCode;
+    private String teacherCode;
     private String expectedOutput;
     private AssignmentOutputType outputType;
     private Lesson lesson;
+    private List<TestCase> testCases = new ArrayList<>();
 
     public Lesson getLesson() {
         return lesson;
@@ -48,6 +53,14 @@ public class Assignment {
         this.templateCode = templateCode;
     }
 
+    public String getTeacherCode() {
+        return teacherCode;
+    }
+
+    public void setTeacherCode(String teacherCode) {
+        this.teacherCode = teacherCode;
+    }
+
     public AssignmentOutputType getOutputType() {
         return outputType;
     }
@@ -57,4 +70,11 @@ public class Assignment {
 
     }
 
+    public List<TestCase> getTestCases() {
+        return testCases;
+    }
+
+    public void setTestCases(List<TestCase> testCases) {
+        this.testCases = testCases;
+    }
 }

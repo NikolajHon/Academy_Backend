@@ -6,22 +6,38 @@ import sk.posam.fsa.discussion.AssignmentRepository;
 
 import java.util.List;
 import java.util.Optional;
+
 @Repository
-public class JpaAssignmentRepositoryAdapter implements AssignmentRepository{
+public class JpaAssignmentRepositoryAdapter implements AssignmentRepository {
 
-    private final AssignmentSpringDataRepository assignmentSpringDataRepository;
+    private final AssignmentSpringDataRepository repo;
 
-    public JpaAssignmentRepositoryAdapter(AssignmentSpringDataRepository assignmentSpringDataRepository) {
-        this.assignmentSpringDataRepository = assignmentSpringDataRepository;
+    public JpaAssignmentRepositoryAdapter(AssignmentSpringDataRepository repo) {
+        this.repo = repo;
     }
 
     @Override
     public Assignment create(Assignment assignment) {
-        return assignmentSpringDataRepository.save(assignment);
+        return repo.save(assignment);
+    }
+
+    @Override
+    public Optional<Assignment> findById(Long id) {
+        return repo.findById(id);
     }
 
     @Override
     public List<Assignment> getAssignmentsByCourse(Long courseId) {
-        return assignmentSpringDataRepository.findAllByLesson_Id(courseId);
+        return repo.findAllByLesson_Id(courseId);
+    }
+
+    @Override
+    public Assignment update(Assignment assignment) {
+        return repo.save(assignment);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        repo.deleteById(id);
     }
 }

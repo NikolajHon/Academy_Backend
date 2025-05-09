@@ -12,6 +12,7 @@ import sk.posam.fsa.discussion.rest.dto.UpdateAssignmentRequestDto;
 public interface AssignmentMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "testCases", source = "testCases")
     Assignment toDomain(CreateAssignmentRequestDto dto);
 
     Assignment toDomain(UpdateAssignmentRequestDto dto);

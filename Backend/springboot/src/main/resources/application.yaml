@@ -1,12 +1,41 @@
-server:
-  servlet:
-    context-path: /api
-
+#server:
+#  servlet:
+#    context-path: /api
+#
+#spring:
+#  datasource:
+#    url: jdbc:postgresql://fsa-honcharenko-psql.postgres.database.azure.com:5432/fsa-db?sslmode=require
+#    username: fsaadmin@fsa-honcharenko-psql
+#    password: P@ssword12345
+#    driver-class-name: org.postgresql.Driver
+#
+#  jpa:
+#    database-platform: org.hibernate.dialect.PostgreSQLDialect
+#    show-sql: true
+#    generate-ddl: true
+#    hibernate:
+#      ddl-auto: update
+#    mapping-resources:
+#      - persistence/discussion-orm.xml
+#
+#  profiles:
+#    active: keycloak
+#
+#  security:
+#    oauth2:
+#      resourceserver:
+#        jwt:
+#          issuer-uri: https://20.223.168.156.nip.io/auth/realms/Academia_project
+#
+#logging:
+#  level:
+#    org.hibernate.SQL: DEBUG
+#    org.hibernate.type.descriptor.sql: TRACE
 spring:
   datasource:
-    url: jdbc:postgresql://fsa-honcharenko-psql.postgres.database.azure.com:5432/fsa-db?sslmode=require
-    username: fsaadmin@fsa-honcharenko-psql
-    password: P@ssword12345
+    url: jdbc:postgresql://localhost:5432/PosAm
+    username: postgres
+    password: 380631159244Kolya
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -25,7 +54,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: https://20.223.168.156.nip.io/auth/realms/Academia_project
+          issuer-uri: http://localhost:8081/realms/Academia_project
+          jwk-set-uri: http://localhost:8081/realms/Academia_project/protocol/openid-connect/certs
 
 logging:
   level:

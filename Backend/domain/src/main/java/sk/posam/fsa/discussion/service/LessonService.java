@@ -5,6 +5,7 @@ package sk.posam.fsa.discussion.service;
 import sk.posam.fsa.discussion.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class LessonService implements LessonFacade {
@@ -36,11 +37,16 @@ public class LessonService implements LessonFacade {
     @Override
     public Assignment createAssignment(Long lessonId, Assignment assignment) {
         Lesson lesson = lessonRepository.findById(lessonId)
-                .orElseThrow(() -> new IllegalArgumentException("Lesson not found"));
+                .orElseThrow(() -> new NoSuchElementException("Lesson not found: " + lessonId));
         assignment.setLesson(lesson);
-        lesson.getAssignments().add(assignment);
+
+        if (assignment.getTestCases() != null) {
+            assignment.getTestCases().forEach(tc -> tc.setAssignment(assignment));
+        }
+
         return assignmentRepository.create(assignment);
     }
+
 
     @Override
     public List<Assignment> getAssignmentsByLesson(Long lessonId) {

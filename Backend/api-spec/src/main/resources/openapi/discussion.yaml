@@ -191,6 +191,88 @@ paths:
         '404':
           description: Assignment not found
 
+  /assignments/{assignmentId}/test-cases:
+    get:
+      summary: Get all test cases for an assignment
+      description: Retrieve the list of all test cases associated with the given assignment.
+      operationId: getTestCasesByAssignment
+      tags:
+        - TestCase
+      parameters:
+        - name: assignmentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: A list of test cases
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TestCase'
+        '404':
+          description: Assignment not found
+
+    post:
+      summary: Create a new test case
+      description: Add a new test case to the specified assignment.
+      operationId: createTestCase
+      tags:
+        - TestCase
+      parameters:
+        - name: assignmentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTestCaseRequest'
+      responses:
+        '201':
+          description: Test case created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestCase'
+        '404':
+          description: Assignment not found
+
+  /assignments/{assignmentId}/test-cases/{testCaseId}:
+    delete:
+      summary: Delete a test case
+      description: Remove the specified test case from its assignment.
+      operationId: deleteTestCase
+      tags:
+        - TestCase
+      parameters:
+        - name: assignmentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: testCaseId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Test case deleted
+        '404':
+          description: Assignment or Test case not found
+
+
   /users:
     get:
       summary: Get all users
@@ -268,6 +350,33 @@ paths:
 
 components:
   schemas:
+    CreateTestCaseRequest:
+      type: object
+      required:
+        - input
+        - expectedOutput
+      properties:
+        input:
+          type: string
+          description: "The input data for this test case"
+        expectedOutput:
+          type: string
+          description: "The expected result when running the assignment code"
+
+    TestCase:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: "Auto-generated test case ID"
+        input:
+          type: string
+          description: "The input data for this test case"
+        expectedOutput:
+          type: string
+          description: "The expected result when running the assignment code"
+
     CreateCourseRequest:
       type: object
       required:
@@ -298,18 +407,30 @@ components:
       type: object
       required:
         - description
+        - teacherCode
         - templateCode
         - expectedOutput
         - outputType
       properties:
         description:
           type: string
+          description: "Human-readable description of the task"
+        teacherCode:
+          type: string
+          description: "Reference solution code for teachers"
         templateCode:
           type: string
+          description: "Starter code template for students"
         expectedOutput:
           type: string
+          description: "Expected output for automatic grading"
         outputType:
           $ref: '#/components/schemas/AssignmentOutputType'
+        testCases:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateTestCaseRequest'
+          description: "Optional list of test cases to create together with this assignment"
 
     UpdateAssignmentRequest:
       allOf:
@@ -321,6 +442,7 @@ components:
             id:
               type: integer
               format: int64
+              description: "ID of the assignment to update"
 
     Assignment:
       type: object
@@ -328,7 +450,10 @@ components:
         id:
           type: integer
           format: int64
+          description: "Unique identifier of the assignment"
         description:
+          type: string
+        teacherCode:
           type: string
         templateCode:
           type: string
@@ -336,6 +461,11 @@ components:
           type: string
         outputType:
           $ref: '#/components/schemas/AssignmentOutputType'
+        testCases:
+          type: array
+          items:
+            $ref: '#/components/schemas/TestCase'
+          description: "List of all test cases associated with this assignment"
 
     AssignmentOutputType:
       type: string
@@ -343,7 +473,7 @@ components:
         - STRING
         - INT
         - JSON
-      description: Тип ожидаемого вывода для автоматической проверки
+      description: "Type of the expected output used for automatic checking"
 
     Lesson:
       type: object
