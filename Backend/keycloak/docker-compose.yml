@@ -1,25 +1,27 @@
-version: "3.8"
+version: '3.1'
 
 services:
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: fsa
+    volumes:
+      - fsa_db_disk:/var/lib/postgresql/data
+
   keycloak:
-    image: fsahoncharenkoregistry.azurecr.io/fsa-keycloak:latest
+    build:
+      context: .
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
-
-      KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://fsa-honcharenko-psql.postgres.database.azure.com:5432/keycloak
-      KC_DB_USERNAME: fsaadmin@fsa-honcharenko-psql
-      KC_DB_PASSWORD: P@ssword12345
-
-      KC_LOG_LEVEL: INFO
-      KC_HTTP_RELATIVE_PATH: /auth
-
-      KC_PROXY: edge
-      KC_HTTP_ENABLED: "false"
-      KC_HOSTNAME: 20.223.168.156.nip.io
-      KC_HOSTNAME_URL: https://20.223.168.156.nip.io
-      KC_HOSTNAME_ADMIN_URL: https://20.223.168.156.nip.io/auth
-
     ports:
       - "8081:8080"
+
+volumes:
+  fsa_db_disk:
+    driver: local

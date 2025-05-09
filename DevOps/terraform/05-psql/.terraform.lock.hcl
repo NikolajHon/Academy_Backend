@@ -1,11 +1,10 @@
-cd # This file is maintained automatically by "terraform init".
+# This file is maintained automatically by "terraform init".
 # Manual edits may be lost in future updates.
 
 provider "registry.terraform.io/hashicorp/azurerm" {
   version     = "4.26.0"
   constraints = "4.26.0"
   hashes = [
-    "h1:Vdylhj5W0M+J62bOOdvVUlmGB7M5TfaNRcThdb8ydcc=",
     "h1:aDlCe/5J3dYrHZXURQxZM9mdCr29rJemJee6BdWTg94=",
     "zh:0e381bace81028596d60e253bc320bf62d00ae2ec207d7c7e70cdbec5f543334",
     "zh:32c8cf70e476a4d0e0a2d4cb94b4a4e95c287c5972ca1e8c0f37dc629fbe31cb",

@@ -26,7 +26,6 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: https://20.223.168.156.nip.io/auth/realms/Academia_project
-          jwk-set-uri: https://20.223.168.156.nip.io/auth/realms/Academia_project/protocol/openid-connect/certs
 
 logging:
   level:

@@ -11,7 +11,7 @@ image:
   # The Keycloak image repository
   repository: fsahoncharenkoregistry.azurecr.io/fsa-keycloak
   # Overrides the Keycloak image tag whose default is the chart appVersion
-  tag: "latest"
+  tag: "1.0"
   # Overrides the Keycloak image tag with a specific digest
   digest: ""
   # The Keycloak image pull policy
@@ -133,10 +133,7 @@ extraEnv: |
   - name: KEYCLOAK_ADMIN
     value: admin
   - name: KEYCLOAK_ADMIN_PASSWORD
-    valueFrom:
-      secretKeyRef:
-        name: keycloak-secret
-        key: kc_password
+    value: admin
   - name: JAVA_OPTS_APPEND              
     value: "-Djgroups.dns.query={{ include "keycloak.fullname" . }}-headless"
 
@@ -255,7 +252,7 @@ secrets: {}
   #   annotations: {}
   #   labels: {}
   #   stringData: {}
-  #   data: {}
+#   data: {}
 
 service:
   # Annotations for HTTP service
@@ -306,11 +303,11 @@ ingress:
   annotations: {}
     ## Resolve HTTP 502 error using ingress-nginx:
     ## See https://www.ibm.com/support/pages/502-error-ingress-keycloak-response
-    # nginx.ingress.kubernetes.io/proxy-buffer-size: 128k
+  # nginx.ingress.kubernetes.io/proxy-buffer-size: 128k
 
   # Additional Ingress labels
   labels: {}
-   # List of rules for the Ingress
+  # List of rules for the Ingress
   rules:
     -
       # Ingress host
