@@ -57,6 +57,11 @@ spring:
           issuer-uri: http://localhost:8081/realms/Academia_project
           jwk-set-uri: http://localhost:8081/realms/Academia_project/protocol/openid-connect/certs
 
+jdoodle:
+  api-url: https://api.jdoodle.com/v1/execute
+  client-id: f5a875bea9d3261f9594ea8552e792cc
+  client-secret: 5f496f47f4d98f0451f7d3eec7311b8eaa24c5d35bb3face94eb40fc8e0e7958
+
 logging:
   level:
     org.hibernate.SQL: DEBUG

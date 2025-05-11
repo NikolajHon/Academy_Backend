@@ -7,13 +7,12 @@ import org.springframework.web.server.ResponseStatusException;
 import sk.posam.fsa.discussion.Assignment;
 import sk.posam.fsa.discussion.TestCase;
 import sk.posam.fsa.discussion.mapper.AssignmentMapper;
+import sk.posam.fsa.discussion.mapper.SubmissionMapper;
 import sk.posam.fsa.discussion.mapper.TestCaseMapper;
 import sk.posam.fsa.discussion.rest.api.AssignmentsApi;
-import sk.posam.fsa.discussion.rest.dto.AssignmentDto;
-import sk.posam.fsa.discussion.rest.dto.CreateTestCaseRequestDto;
-import sk.posam.fsa.discussion.rest.dto.TestCaseDto;
-import sk.posam.fsa.discussion.rest.dto.UpdateAssignmentRequestDto;
+import sk.posam.fsa.discussion.rest.dto.*;
 import sk.posam.fsa.discussion.service.AssignmentFacade;
+import sk.posam.fsa.discussion.service.SubmissionFacade;
 import sk.posam.fsa.discussion.service.TestCaseFacade;
 
 import java.util.List;
@@ -27,16 +26,23 @@ public class AssignmentRestController implements AssignmentsApi {
     private final TestCaseFacade testCaseFacade;
     private final AssignmentMapper assignmentMapper;
     private final TestCaseMapper testCaseMapper;
+    private final SubmissionFacade submissionFacade;
+    private final SubmissionMapper submissionMapper;
 
     public AssignmentRestController(AssignmentFacade assignmentFacade,
                                     TestCaseFacade testCaseFacade,
                                     AssignmentMapper assignmentMapper,
-                                    TestCaseMapper testCaseMapper) {
-        this.assignmentFacade  = assignmentFacade;
-        this.testCaseFacade    = testCaseFacade;
-        this.assignmentMapper  = assignmentMapper;
-        this.testCaseMapper    = testCaseMapper;
+                                    TestCaseMapper testCaseMapper,
+                                    SubmissionFacade submissionFacade,
+                                    SubmissionMapper submissionMapper) {
+        this.assignmentFacade = assignmentFacade;
+        this.testCaseFacade   = testCaseFacade;
+        this.assignmentMapper = assignmentMapper;
+        this.testCaseMapper   = testCaseMapper;
+        this.submissionFacade = submissionFacade;
+        this.submissionMapper = submissionMapper;
     }
+
 
     @Override
     public ResponseEntity<AssignmentDto> getAssignmentById(Long assignmentId) {
@@ -79,6 +85,23 @@ public class AssignmentRestController implements AssignmentsApi {
                 .map(testCaseMapper::toDto)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(dtos);
+    }
+
+    @Override
+    public ResponseEntity<SubmissionResponseDto> submitAssignment(
+            Long assignmentId,
+            SubmissionRequestDto request) {
+
+        try {
+            var result = submissionFacade.submit(
+                    assignmentId, request.getCode());
+
+            return ResponseEntity.ok(submissionMapper.toDto(result));
+
+        } catch (NoSuchElementException ex) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Assignment not found", ex);
+        }
     }
 
     @Override

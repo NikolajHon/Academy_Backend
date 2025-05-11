@@ -5,6 +5,32 @@ info:
   description: API pre správu diskusných príspevkov a úloh k lekciám.
 
 paths:
+  /assignments/{assignmentId}/submissions:
+    post:
+      summary: Submit student code for automatic checking
+      operationId: submitAssignment
+      tags:
+        - Submission
+      parameters:
+        - name: assignmentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmissionRequest'
+      responses:
+        '200':
+          description: Results of test case execution
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmissionResponse'
   /courses:
     get:
       summary: Get all courses
@@ -350,6 +376,35 @@ paths:
 
 components:
   schemas:
+    SubmissionRequest:
+      type: object
+      required:
+        - code
+      properties:
+        code:
+          type: string
+          description: "Student's code to be composed with teacherCode and executed"
+
+    TestCaseResult:
+      type: object
+      properties:
+        input:
+          type: string
+        expectedOutput:
+          type: string
+        actualOutput:
+          type: string
+        passed:
+          type: boolean
+
+    SubmissionResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TestCaseResult'
+
     CreateTestCaseRequest:
       type: object
       required:
