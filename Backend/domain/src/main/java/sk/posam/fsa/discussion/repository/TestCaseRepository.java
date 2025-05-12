@@ -1,4 +1,6 @@
-package sk.posam.fsa.discussion;
+package sk.posam.fsa.discussion.repository;
+
+import sk.posam.fsa.discussion.TestCase;
 
 import java.util.List;
 import java.util.Optional;

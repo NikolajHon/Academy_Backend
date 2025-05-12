@@ -3,10 +3,12 @@
 package sk.posam.fsa.discussion.service;
 
 import sk.posam.fsa.discussion.*;
+import sk.posam.fsa.discussion.repository.AssignmentRepository;
+import sk.posam.fsa.discussion.repository.CourseRepository;
+import sk.posam.fsa.discussion.repository.LessonRepository;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 public class LessonService implements LessonFacade {
 

@@ -1,10 +1,9 @@
 package sk.posam.fsa.discussion.service;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
 import sk.posam.fsa.discussion.Course;
-import sk.posam.fsa.discussion.CourseRepository;
+import sk.posam.fsa.discussion.repository.CourseRepository;
 import sk.posam.fsa.discussion.User;
-import sk.posam.fsa.discussion.UserRepository;
+import sk.posam.fsa.discussion.repository.UserRepository;
 
 import java.util.Collection;
 import java.util.List;

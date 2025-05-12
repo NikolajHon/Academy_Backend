@@ -1,17 +1,16 @@
 package sk.posam.fsa.discussion.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-import sk.posam.fsa.discussion.Course;
-import sk.posam.fsa.discussion.Lesson;
-import sk.posam.fsa.discussion.mapper.CourseMapper;
-import sk.posam.fsa.discussion.mapper.LessonMapper;
+import sk.posam.fsa.discussion.*;
+import sk.posam.fsa.discussion.mapper.*;
 import sk.posam.fsa.discussion.rest.api.CoursesApi;
 import sk.posam.fsa.discussion.rest.dto.*;
 import sk.posam.fsa.discussion.security.CurrentUserDetailService;
-import sk.posam.fsa.discussion.service.CourseFacade;
+import sk.posam.fsa.discussion.service.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -19,81 +18,47 @@ import java.util.List;
 @RestController
 public class CourseRestController implements CoursesApi {
 
-    private final CourseFacade courseFacade;
-    private final CourseMapper courseMapper;
-    private final LessonMapper lessonMapper;
+    private final CourseFacade  courseFacade;
+    private final ForumFacade   forumFacade;
+    private final CourseMapper  courseMapper;
+    private final LessonMapper  lessonMapper;
+    private final TopicMapper   topicMapper;
     private final CurrentUserDetailService currentUserDetailService;
 
     public CourseRestController(CourseFacade courseFacade,
+                                ForumFacade forumFacade,
                                 CourseMapper courseMapper,
                                 LessonMapper lessonMapper,
+                                TopicMapper topicMapper,
                                 CurrentUserDetailService currentUserDetailService) {
-        this.courseFacade = courseFacade;
-        this.courseMapper = courseMapper;
-        this.lessonMapper = lessonMapper;
-        this.currentUserDetailService = currentUserDetailService;
+        this.courseFacade               = courseFacade;
+        this.forumFacade                = forumFacade;
+        this.courseMapper               = courseMapper;
+        this.lessonMapper               = lessonMapper;
+        this.topicMapper                = topicMapper;
+        this.currentUserDetailService   = currentUserDetailService;
     }
 
     @Override
-    public ResponseEntity<Void> createCourse(CreateCourseRequestDto createCourseRequestDto) {
-        UserDto user = currentUserDetailService.getCurrentUser();
-
-
-        if (!UserDto.RoleEnum.TEACHER.equals(user.getRole())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only teachers can create courses.");
-        }
-        System.out.println("Creating course by user: " + user.getEmail());
+    public ResponseEntity<Void> createCourse(@Valid CreateCourseRequestDto body) {
 
         Course course = new Course();
-        course.setName(createCourseRequestDto.getName());
-        course.setDescription(createCourseRequestDto.getDescription());
+        course.setName(body.getName());
+        course.setDescription(body.getDescription());
         courseFacade.create(course);
+
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @Override
     public ResponseEntity<CoursesResponseDto> getAllCourses() {
         Collection<Course> courses = courseFacade.readAll();
+        List<CourseDto>    dtos    = courseMapper.toDto(courses);
 
-        System.out.println("=== Loaded Courses ===");
-        for (Course course : courses) {
-            System.out.println("Course ID: " + course.getId() + ", Name: " + course.getName());
-            if (course.getLessons() != null) {
-                for (Lesson lesson : course.getLessons()) {
-                    System.out.println("  -> Lesson ID: " + lesson.getId() +
-                            ", Title: " + lesson.getTitle() +
-                            ", Course ID inside lesson: " +
-                            (lesson.getCourse() != null ? lesson.getCourse().getId() : "NULL"));
-                }
-            } else {
-                System.out.println("  -> No lessons found.");
-            }
-        }
-        System.out.println("=======================");
-
-        List<CourseDto> courseDto = courseMapper.toDto(courses);
-
-        System.out.println("=== Mapped Course DTOs ===");
-        for (CourseDto dto : courseDto) {
-            System.out.println("CourseDto ID: " + dto.getId() + ", Name: " + dto.getName());
-            if (dto.getLessons() != null) {
-                for (var lessonDto : dto.getLessons()) {
-                    System.out.println("  -> LessonDto ID: " + lessonDto.getId() +
-                            ", Title: " + lessonDto.getTitle() +
-                            ", courseId: " + lessonDto.getCourseId());
-                }
-            } else {
-                System.out.println("  -> No lessons found in DTO.");
-            }
-        }
-        System.out.println("==========================");
-
-        CoursesResponseDto response = new CoursesResponseDto();
-        response.setCourses(courseDto);
-
-        return ResponseEntity.ok(response);
+        CoursesResponseDto resp = new CoursesResponseDto();
+        resp.setCourses(dtos);
+        return ResponseEntity.ok(resp);
     }
-
 
     @Override
     public ResponseEntity<List<LessonDto>> getLessonsByCourseId(Long id) {
@@ -101,12 +66,41 @@ public class CourseRestController implements CoursesApi {
                 .stream()
                 .filter(c -> c.getId().equals(id))
                 .findFirst()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found"));
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                "Course not found"));
+        return ResponseEntity.ok(lessonMapper.toDto(course.getLessons()));
+    }
 
-        List<Lesson> lessons = course.getLessons();
+    @Override
+    public ResponseEntity<TopicDto> createTopic(Long courseId,
+                                                @Valid CreateTopicRequestDto body) {
 
-        List<LessonDto> lessonDtos = lessonMapper.toDto(lessons);
+        Topic topic = topicMapper.toEntity(body);
 
-        return ResponseEntity.ok(lessonDtos);
+        Course courseRef = new Course();
+        courseRef.setId(courseId);
+        topic.setCourse(courseRef);
+
+        forumFacade.createTopic(topic);
+        return ResponseEntity.status(HttpStatus.CREATED).body(topicMapper.toDto(topic));
+    }
+
+    @Override
+    public ResponseEntity<TopicsResponseDto> getTopicsByCourse(Long courseId,
+                                                               Integer page,
+                                                               Integer size) {
+
+        int p = (page == null || page < 0) ? 0  : page;
+        int s = (size == null || size <= 0) ? 20 : size;
+
+        Collection<Topic> topics = forumFacade.getTopics(courseId, p, s);
+
+        TopicsResponseDto resp = new TopicsResponseDto()
+                .page(p)
+                .size(s)
+                .topics(topicMapper.toDto(topics));
+
+        return ResponseEntity.ok(resp);
     }
 }

@@ -1,7 +1,7 @@
 package sk.posam.fsa.discussion.service;
 
 import sk.posam.fsa.discussion.Course;
-import sk.posam.fsa.discussion.CourseRepository;
+import sk.posam.fsa.discussion.repository.CourseRepository;
 
 import java.util.Collection;
 

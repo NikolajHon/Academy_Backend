@@ -1,14 +1,16 @@
 package sk.posam.fsa.discussion.security;
 
-
+import jakarta.transaction.Transactional;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import sk.posam.fsa.discussion.User;
-import sk.posam.fsa.discussion.service.UserFacade;
+import sk.posam.fsa.discussion.UserRole;
 import sk.posam.fsa.discussion.rest.dto.UserDto;
+import sk.posam.fsa.discussion.service.CurrentUserPort;
+import sk.posam.fsa.discussion.service.UserFacade;
 
-@Service
-public class CurrentUserDetailService {
+@Component
+public class CurrentUserDetailService implements CurrentUserPort {
 
     private final UserFacade userFacade;
 
@@ -16,17 +18,40 @@ public class CurrentUserDetailService {
         this.userFacade = userFacade;
     }
 
-    public UserDto getCurrentUser() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    @Override
+    @Transactional
+    public User getCurrentUser() {
 
-        if (principal instanceof UserDto userDto) {
-            return userDto;
+        Object principal = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+        if (!(principal instanceof UserDto dto)) {
+            throw new IllegalStateException("Principal is not UserDto");
         }
 
-        throw new IllegalStateException("Current user is not of type UserDto.");
+        return userFacade.get(dto.getEmail())
+                .orElseGet(() -> {
+                    User u = new User();
+                    u.setEmail(dto.getEmail());
+                    u.setGivingName(dto.getGivingName());
+                    u.setFamilyName(dto.getFamilyName());
+
+                    if (dto.getRole() != null) {
+                        u.setRole(dto.getRole() == UserDto.RoleEnum.TEACHER
+                                ? UserRole.TEACHER
+                                : UserRole.STUDENT);
+                    }
+                    userFacade.create(u);
+                    return u;
+                });
     }
 
-    public User getFullCurrentUser() {
-        return userFacade.get(getCurrentUser().getEmail()).orElseThrow();
+    public UserDto getCurrentUserDto() {
+        Object principal = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+        if (principal instanceof UserDto dto) return dto;
+        throw new IllegalStateException("Principal is not UserDto");
     }
 }

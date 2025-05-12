@@ -2,7 +2,7 @@ package sk.posam.fsa.discussion.jpa;
 
 import org.springframework.stereotype.Repository;
 import sk.posam.fsa.discussion.Lesson;
-import sk.posam.fsa.discussion.LessonRepository;
+import sk.posam.fsa.discussion.repository.LessonRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,4 +30,10 @@ public class JpaLessonRepositoryAdapter implements LessonRepository {
     public Optional<Lesson> findById(Long id) {
         return springDataRepository.findById(id);
     }
+
+    @Override
+    public Lesson get(long id) {
+        return springDataRepository.getReferenceById(id);
+    }
+
 }

@@ -1,6 +1,7 @@
 package sk.posam.fsa.discussion.service;
 
 import sk.posam.fsa.discussion.*;
+import sk.posam.fsa.discussion.repository.AssignmentRepository;
 
 import java.util.ArrayList;
 import java.util.List;

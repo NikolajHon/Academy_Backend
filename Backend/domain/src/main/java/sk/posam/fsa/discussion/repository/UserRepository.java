@@ -1,4 +1,6 @@
-package sk.posam.fsa.discussion;
+package sk.posam.fsa.discussion.repository;
+
+import sk.posam.fsa.discussion.User;
 
 import java.util.Collection;
 import java.util.Optional;

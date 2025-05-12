@@ -8,7 +8,64 @@
         version="2.1">
 
     <package>sk.posam.fsa.discussion</package>
+    <entity class="Topic" access="PROPERTY">
+        <table name="topic"/>
+        <attributes>
+            <id name="id">
+                <column name="id"/>
+                <generated-value strategy="IDENTITY"/>
+            </id>
+            <basic name="title">
+                <column name="title" length="255" nullable="false"/>
+            </basic>
+            <basic name="status">
+                <column name="status" nullable="false"/>
+            </basic>
+            <basic name="createdAt"><column name="created_at"/></basic>
+            <basic name="lastActivityAt"><column name="last_activity_at"/></basic>
 
+            <many-to-one name="course" fetch="EAGER">
+                <join-column name="course_id" nullable="false"/>
+            </many-to-one>
+
+
+            <many-to-one name="createdBy" fetch="EAGER">
+                <join-column name="created_by_id" nullable="false"/>
+            </many-to-one>
+
+            <one-to-many name="posts" mapped-by="topic" fetch="LAZY" orphan-removal="true">
+                <cascade><cascade-all/></cascade>
+            </one-to-many>
+        </attributes>
+    </entity>
+
+    <!-- Post -->
+    <entity class="Post" access="PROPERTY">
+        <table name="post"/>
+        <attributes>
+            <id name="id"><column name="id"/><generated-value strategy="IDENTITY"/></id>
+            <basic name="content"><column name="content" length="4000"/></basic>
+            <basic name="status"><column name="status" nullable="false"/></basic>
+            <basic name="createdAt"><column name="created_at"/></basic>
+            <basic name="updatedAt"><column name="updated_at"/></basic>
+
+            <many-to-one name="topic" fetch="EAGER">
+                <join-column name="topic_id" nullable="false"/>
+            </many-to-one>
+
+            <many-to-one name="parent" fetch="EAGER" optional="true">
+                <join-column name="parent_id"/>
+            </many-to-one>
+
+            <many-to-one name="author" fetch="EAGER">
+                <join-column name="author_id" nullable="false"/>
+            </many-to-one>
+
+            <one-to-many name="replies" mapped-by="parent" fetch="LAZY" orphan-removal="true">
+                <cascade><cascade-all/></cascade>
+            </one-to-many>
+        </attributes>
+    </entity>
     <entity class="Assignment" access="PROPERTY">
         <table name="assignment"/>
         <attributes>

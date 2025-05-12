@@ -5,6 +5,242 @@ info:
   description: API pre správu diskusných príspevkov a úloh k lekciám.
 
 paths:
+  /courses/{courseId}/topics:
+    get:
+      summary: Get topics of a course forum
+      operationId: getTopicsByCourse
+      tags: [ Forum ]
+      parameters:
+        - name: courseId
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+        - name: page
+          in: query
+          required: false
+          schema: { type: integer, minimum: 0, default: 0 }
+        - name: size
+          in: query
+          required: false
+          schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
+      responses:
+        '200':
+          description: Paged list of topics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopicsResponse'
+
+    post:
+      summary: Create new topic in a course forum
+      operationId: createTopic
+      tags: [ Forum ]
+      parameters:
+        - name: courseId
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTopicRequest'
+      responses:
+        '201':
+          description: Topic created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Topic'
+
+  /topics/{topicId}:
+    get:
+      summary: Get a topic by ID
+      operationId: getTopicById
+      tags: [ Forum ]
+      parameters:
+        - name: topicId
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '200':
+          description: Topic details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Topic'
+        '404': { description: Topic not found }
+
+    put:
+      summary: Update topic (title or status)
+      operationId: updateTopic
+      tags: [ Forum ]
+      parameters:
+        - name: topicId
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTopicRequest'
+      responses:
+        '200':
+          description: Topic updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Topic'
+        '404': { description: Topic not found }
+
+    delete:
+      summary: Delete topic
+      operationId: deleteTopic
+      tags: [ Forum ]
+      parameters:
+        - name: topicId
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '204': { description: Topic deleted }
+        '404': { description: Topic not found }
+
+  /topics/{topicId}/posts:
+    get:
+      summary: Get root posts (questions) of topic
+      operationId: getPostsByTopic
+      tags: [ Forum ]
+      parameters:
+        - name: topicId
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+        - name: page
+          in: query
+          required: false
+          schema: { type: integer, minimum: 0, default: 0 }
+        - name: size
+          in: query
+          required: false
+          schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
+      responses:
+        '200':
+          description: Paged list of posts (only first-level)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostsResponse'
+        '404': { description: Topic not found }
+
+    post:
+      summary: Create a root post (question) in topic
+      operationId: createPost
+      tags: [ Forum ]
+      parameters:
+        - name: topicId
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePostRequest'
+      responses:
+        '201':
+          description: Post created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '404': { description: Topic not found }
+
+  /posts/{postId}:
+    get:
+      summary: Get a single post with its replies (recursive tree)
+      operationId: getPostById
+      tags: [ Forum ]
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '200':
+          description: Post with nested replies
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '404': { description: Post not found }
+
+    put:
+      summary: Update a post
+      operationId: updatePost
+      tags: [ Forum ]
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePostRequest'
+      responses:
+        '200':
+          description: Post updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '404': { description: Post not found }
+
+    delete:
+      summary: Delete a post
+      operationId: deletePost
+      tags: [ Forum ]
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '204': { description: Post deleted }
+        '404': { description: Post not found }
+
+  /posts/{postId}/replies:
+    post:
+      summary: Reply to a post
+      operationId: createReply
+      tags: [ Forum ]
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReplyRequest'
+      responses:
+        '201':
+          description: Reply created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '404': { description: Post not found }
   /assignments/{assignmentId}/submissions:
     post:
       summary: Submit student code for automatic checking
@@ -376,6 +612,154 @@ paths:
 
 components:
   schemas:
+    CreateTopicRequest:
+      type: object
+      required: [ title ]
+      properties:
+        title:
+          type: string
+        lessonId:
+          type: integer
+          format: int64
+          nullable: true
+          description: Optional lesson reference; null → general topic
+
+    UpdateTopicRequest:
+      allOf:
+        - $ref: '#/components/schemas/CreateTopicRequest'
+        - type: object
+          required: [ id ]
+          properties:
+            id:
+              type: integer
+              format: int64
+            status:
+              $ref: '#/components/schemas/TopicStatus'
+
+    Topic:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        courseId:
+          type: integer
+          format: int64
+        lessonId:
+          type: integer
+          format: int64
+          nullable: true
+        status:
+          $ref: '#/components/schemas/TopicStatus'
+        createdAt:
+          type: string
+          format: date-time
+        createdById:
+          type: integer
+          format: int64
+        postsCount:
+          type: integer
+          format: int32
+        lastActivityAt:
+          type: string
+          format: date-time
+
+    TopicStatus:
+      type: string
+      enum: [ OPEN, CLOSED, ARCHIVED ]
+
+    TopicsResponse:
+      type: object
+      properties:
+        topics:
+          type: array
+          items: { $ref: '#/components/schemas/Topic' }
+        page:
+          type: integer
+        size:
+          type: integer
+        totalElements:
+          type: integer
+        totalPages:
+          type: integer
+
+    # ===== POST =====
+    CreatePostRequest:
+      type: object
+      required: [ content ]
+      properties:
+        content:
+          type: string
+
+    CreateReplyRequest:
+      type: object
+      required: [ content ]
+      properties:
+        content:
+          type: string
+
+    UpdatePostRequest:
+      type: object
+      required: [ id, content ]
+      properties:
+        id:
+          type: integer
+          format: int64
+        content:
+          type: string
+
+    Post:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        topicId:
+          type: integer
+          format: int64
+        parentId:
+          type: integer
+          format: int64
+          nullable: true
+        authorId:
+          type: integer
+          format: int64
+        content:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          $ref: '#/components/schemas/PostStatus'
+        replies:
+          type: array
+          description: Recursive list of replies; omitted in collections
+          items: { $ref: '#/components/schemas/Post' }
+
+    PostStatus:
+      type: string
+      enum: [ ACTIVE, HIDDEN, DELETED ]
+
+    PostsResponse:
+      type: object
+      properties:
+        posts:
+          type: array
+          items: { $ref: '#/components/schemas/Post' }
+        page:
+          type: integer
+        size:
+          type: integer
+        totalElements:
+          type: integer
+        totalPages:
+          type: integer
     SubmissionRequest:
       type: object
       required:

@@ -2,10 +2,9 @@ package sk.posam.fsa.discussion.jpa;
 
 import org.springframework.stereotype.Repository;
 import sk.posam.fsa.discussion.User;
-import sk.posam.fsa.discussion.UserRepository;
+import sk.posam.fsa.discussion.repository.UserRepository;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 @Repository

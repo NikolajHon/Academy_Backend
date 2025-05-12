@@ -1,7 +1,7 @@
 package sk.posam.fsa.discussion.service;
 
 import sk.posam.fsa.discussion.Question;
-import sk.posam.fsa.discussion.QuestionRepository;
+import sk.posam.fsa.discussion.repository.QuestionRepository;
 
 public class QuestionService implements QuestionFacade {
 

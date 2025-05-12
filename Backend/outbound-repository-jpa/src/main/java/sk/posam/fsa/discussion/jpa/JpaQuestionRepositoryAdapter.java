@@ -2,7 +2,7 @@ package sk.posam.fsa.discussion.jpa;
 
 import org.springframework.stereotype.Repository;
 import sk.posam.fsa.discussion.Question;
-import sk.posam.fsa.discussion.QuestionRepository;
+import sk.posam.fsa.discussion.repository.QuestionRepository;
 @Repository
 public class JpaQuestionRepositoryAdapter implements QuestionRepository {
 

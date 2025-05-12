@@ -2,7 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>sk.posam.fsa.discussion</groupId>
         <artifactId>parent</artifactId>
@@ -13,9 +15,13 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+
         <openapi-generator-maven-plugin.version>7.10.0</openapi-generator-maven-plugin.version>
     </properties>
 
+    <!-- зависимости нужны только чтобы сгенерировать интерфейсы/DTO -->
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -41,38 +47,54 @@
 
     <build>
         <plugins>
+
+            <!-- ───────── OpenAPI Generator ───────── -->
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
                 <version>${openapi-generator-maven-plugin.version}</version>
+
                 <executions>
                     <execution>
                         <id>discussion-api</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
+
                         <configuration>
+                            <!-- Где лежит YAML -->
                             <inputSpec>${project.basedir}/src/main/resources/openapi/discussion.yaml</inputSpec>
+
+                            <!-- Генерируем spring-interfaces + DTO -->
                             <generatorName>spring</generatorName>
                             <library>spring-boot</library>
+
+                            <!-- Пакеты -->
                             <apiPackage>sk.posam.fsa.discussion.rest.api</apiPackage>
                             <modelPackage>sk.posam.fsa.discussion.rest.dto</modelPackage>
                             <modelNameSuffix>Dto</modelNameSuffix>
-                            <generateSupportingFiles>false</generateSupportingFiles>
+
+                            <!-- Подключаем ключевую опцию -->
                             <configOptions>
                                 <interfaceOnly>true</interfaceOnly>
                                 <skipDefaultInterface>true</skipDefaultInterface>
                                 <useSpringBoot3>true</useSpringBoot3>
                                 <openApiNullable>false</openApiNullable>
                                 <documentationProvider>none</documentationProvider>
+
+                                <!-- >>> основное изменение: LocalDateTime вместо OffsetDateTime -->
+                                <dateLibrary>java8-localdatetime</dateLibrary>
                             </configOptions>
+
+                            <!-- не генерировать вспомогательные классы -->
+                            <generateSupportingFiles>false</generateSupportingFiles>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
 
+            <!-- добавляем сгенерированный код в дерево исходников -->
             <plugin>
-                <!-- adding generated source (it adds a new build_class_path to the project) -->
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
                 <executions>
@@ -92,5 +114,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

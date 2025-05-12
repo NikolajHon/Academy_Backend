@@ -29,13 +29,6 @@ public class QuestionRestController implements QuestionsApi {
 
     @Override
     public ResponseEntity<QuestionDto> createQuestion(CreateQuestionRequestDto createQuestionRequestDto) {
-        UserDto user = currentUserDetailService.getCurrentUser();
-
-        if (!UserDto.RoleEnum.TEACHER.equals(user.getRole())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only teachers can create questions.");
-        }
-
-        System.out.println("Creating question by user: " + user.getEmail());
 
         var question = questionMapper.toDomain(createQuestionRequestDto);
         var savedQuestion = questionFacade.create(question);

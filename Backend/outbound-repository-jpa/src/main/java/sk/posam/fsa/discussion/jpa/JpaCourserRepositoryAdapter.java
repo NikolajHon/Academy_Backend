@@ -2,7 +2,7 @@ package sk.posam.fsa.discussion.jpa;
 
 import org.springframework.stereotype.Repository;
 import sk.posam.fsa.discussion.Course;
-import sk.posam.fsa.discussion.CourseRepository;
+import sk.posam.fsa.discussion.repository.CourseRepository;
 
 import java.util.List;
 

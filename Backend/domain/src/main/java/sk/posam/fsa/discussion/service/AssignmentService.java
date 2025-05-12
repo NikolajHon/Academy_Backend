@@ -1,7 +1,7 @@
 package sk.posam.fsa.discussion.service;
 
 import sk.posam.fsa.discussion.Assignment;
-import sk.posam.fsa.discussion.AssignmentRepository;
+import sk.posam.fsa.discussion.repository.AssignmentRepository;
 
 import java.util.List;
 import java.util.NoSuchElementException;
