@@ -28,10 +28,13 @@ public class PostRestController implements PostsApi {
                                                @Valid CreateReplyRequestDto createReplyRequestDto) {
 
         Post reply = mapper.toEntity(createReplyRequestDto);
-        forumFacade.reply(postId, reply);
+        Post savedReply = forumFacade.reply(postId, reply);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toDto(reply));
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(mapper.toDto(savedReply));
     }
+
 
     @Override
     public ResponseEntity<Void> deletePost(Long postId) {

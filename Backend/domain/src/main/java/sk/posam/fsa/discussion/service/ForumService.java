@@ -3,36 +3,34 @@ package sk.posam.fsa.discussion.service;
 import sk.posam.fsa.discussion.*;
 import sk.posam.fsa.discussion.repository.*;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
+
 public class ForumService implements ForumFacade {
 
     private final TopicRepository  topicRepository;
     private final PostRepository   postRepository;
     private final CourseRepository courseRepository;
-    private final LessonRepository lessonRepository;
-    private final CurrentUserPort  currentUser;      // ← новый порт
+    private final CurrentUserPort  currentUser;
 
     public ForumService(TopicRepository topicRepository,
-                        PostRepository postRepository,
+                        PostRepository  postRepository,
                         CourseRepository courseRepository,
-                        LessonRepository lessonRepository,
-                        CurrentUserPort currentUser) {     // ← внедряем
+                        CurrentUserPort  currentUser) {
+
         this.topicRepository  = topicRepository;
         this.postRepository   = postRepository;
         this.courseRepository = courseRepository;
-        this.lessonRepository = lessonRepository;
         this.currentUser      = currentUser;
     }
 
 
     @Override
-    public java.util.Collection<Topic> getTopics(long courseId, int page, int size) {
+    public Collection<Topic> getTopics(long courseId, int page, int size) {
         return topicRepository.getByCourse(courseId, page, size);
     }
 
-    @Override
-    public Topic getTopic(long id) {
-        return topicRepository.get(id);
-    }
+    @Override public Topic getTopic(long id) { return topicRepository.get(id); }
 
     @Override
     public void createTopic(Topic topic) {
@@ -41,32 +39,22 @@ public class ForumService implements ForumFacade {
         topic.setCourse(course);
 
         topic.setCreatedBy(currentUser.getCurrentUser());
-
+        topic.setCreatedAt(LocalDateTime.now());
         topic.setStatus(TopicStatus.OPEN);
-        topic.setCreatedAt(java.time.LocalDateTime.now());
 
         topicRepository.create(topic);
     }
 
-    @Override
-    public void updateTopic(Topic topic) {
-        topicRepository.update(topic);
-    }
+    @Override public void updateTopic(Topic topic) { topicRepository.update(topic); }
+    @Override public void deleteTopic(long id)      { topicRepository.delete(id); }
+
 
     @Override
-    public void deleteTopic(long id) {
-        topicRepository.delete(id);
-    }
-
-    @Override
-    public java.util.Collection<Post> getRootPosts(long topicId, int page, int size) {
+    public Collection<Post> getRootPosts(long topicId, int page, int size) {
         return postRepository.getRootsByTopic(topicId, page, size);
     }
 
-    @Override
-    public Post getPost(long id) {
-        return postRepository.get(id);
-    }
+    @Override public Post getPost(long id) { return postRepository.get(id); }
 
     @Override
     public void createPost(Post post) {
@@ -75,36 +63,31 @@ public class ForumService implements ForumFacade {
         post.setTopic(topic);
 
         post.setAuthor(currentUser.getCurrentUser());
-
         post.setStatus(PostStatus.ACTIVE);
-        post.setCreatedAt(java.time.LocalDateTime.now());
+        post.setCreatedAt(LocalDateTime.now());
 
         postRepository.create(post);
     }
 
     @Override
-    public void reply(Long parentPostId, Post reply) {
-
+    public Post reply(Long parentPostId, Post reply) {
         Post parent = postRepository.get(parentPostId);
 
         reply.setAuthor(currentUser.getCurrentUser());
-
         reply.setTopic(parent.getTopic());
+        reply.setParent(parent);
         reply.setStatus(PostStatus.ACTIVE);
-        reply.setCreatedAt(java.time.LocalDateTime.now());
+        reply.setCreatedAt(LocalDateTime.now());
+        postRepository.create(reply);
 
-        parent.addReply(reply);
-        postRepository.update(parent);
+        return reply;
     }
 
     @Override
     public void updatePost(Post post) {
-        post.setUpdatedAt(java.time.LocalDateTime.now());
+        post.setUpdatedAt(LocalDateTime.now());
         postRepository.update(post);
     }
 
-    @Override
-    public void deletePost(long id) {
-        postRepository.delete(id);
-    }
+    @Override public void deletePost(long id) { postRepository.delete(id); }
 }

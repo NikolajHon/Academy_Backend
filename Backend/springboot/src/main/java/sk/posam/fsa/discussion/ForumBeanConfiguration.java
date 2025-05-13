@@ -17,8 +17,7 @@ public class ForumBeanConfiguration {
     ForumFacade forumFacade(TopicRepository topicRepo,
                             PostRepository postRepo,
                             CourseRepository courseRepo,
-                            LessonRepository lessonRepo,
                             CurrentUserPort currentUser) {
-        return new ForumService(topicRepo, postRepo, courseRepo, lessonRepo, currentUser);
+        return new ForumService(topicRepo, postRepo, courseRepo,  currentUser);
     }
 }

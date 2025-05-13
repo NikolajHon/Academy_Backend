@@ -1,12 +1,8 @@
 package sk.posam.fsa.discussion.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 import sk.posam.fsa.discussion.Topic;
-import sk.posam.fsa.discussion.rest.dto.CreateTopicRequestDto;
-import sk.posam.fsa.discussion.rest.dto.UpdateTopicRequestDto;
-import sk.posam.fsa.discussion.rest.dto.TopicDto;
+import sk.posam.fsa.discussion.rest.dto.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,14 +11,19 @@ import java.util.List;
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface TopicMapper {
 
-    TopicDto toDto(Topic topic);
-    List<TopicDto> toDto(Collection<Topic> topics);
+    @Mapping(target = "courseId",     source = "course.id")
+    @Mapping(target = "createdById",  source = "createdBy.id")
+    TopicDto toDto(Topic entity);
 
-    @Mapping(target = "id",  ignore = true)
-    @Mapping(target = "course", ignore = true)
-    @Mapping(target = "status", constant = "OPEN")
+    List<TopicDto> toDto(Collection<Topic> entities);
+
+    @Mapping(target = "id",        ignore = true)
+    @Mapping(target = "course",    ignore = true)   // заполняем в сервисе
+    @Mapping(target = "createdBy", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "status",    constant = "OPEN")
     Topic toEntity(CreateTopicRequestDto dto);
 
-    @Mapping(target = "course", ignore = true)
+    @InheritConfiguration(name = "toEntity")
     Topic toEntity(UpdateTopicRequestDto dto);
 }
