@@ -11,18 +11,19 @@ import java.util.List;
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface PostMapper {
 
-    @Mapping(target = "topicId",  source = "topic.id")
-    @Mapping(target = "parentId", source = "parent.id")
-    @Mapping(target = "authorId", source = "author.id")
-    PostDto toDto(Post entity);
+    @Mapping(target = "topicId",   source = "topic.id")
+    @Mapping(target = "parentId",  source = "parent.id")
+    @Mapping(target = "authorName",
+            expression = "java(post.getAuthor().getGivingName() + \" \" + post.getAuthor().getFamilyName())")
+    PostDto toDto(Post post);
 
-    List<PostDto> toDto(Collection<Post> entities);
+    List<PostDto> toDto(Collection<Post> posts);
 
-    @Mapping(target = "id",       ignore = true)
-    @Mapping(target = "topic",    ignore = true)
-    @Mapping(target = "parent",   ignore = true)
-    @Mapping(target = "author",   ignore = true)
-    @Mapping(target = "status",   ignore = true)
+    @Mapping(target = "id",        ignore = true)
+    @Mapping(target = "topic",     ignore = true)
+    @Mapping(target = "parent",    ignore = true)
+    @Mapping(target = "author",    ignore = true)
+    @Mapping(target = "status",    ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     Post toEntity(CreatePostRequestDto dto);
@@ -32,4 +33,5 @@ public interface PostMapper {
 
     @InheritConfiguration(name = "toEntity")
     Post toEntity(UpdatePostRequestDto dto);
+
 }

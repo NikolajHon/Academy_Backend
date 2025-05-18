@@ -193,20 +193,6 @@
             </many-to-many>
         </attributes>
     </entity>
-    <!-- Answer -->
-    <entity class="Answer" access="PROPERTY">
-        <table name="answer"/>
-        <attributes>
-            <id name="id">
-                <column name="id"/>
-                <generated-value strategy="IDENTITY"/>
-            </id>
-            <basic name="answer_body">
-                <column name="answer_body" length="1000"/>
-            </basic>
-        </attributes>
-    </entity>
-
     <!-- Question -->
     <entity class="Question" access="PROPERTY">
         <table name="question"/>
@@ -215,17 +201,46 @@
                 <column name="id"/>
                 <generated-value strategy="IDENTITY"/>
             </id>
-            <basic name="question_body">
-                <column name="question_body" length="1000"/>
+            <basic name="text">
+                <column name="text" nullable="false" length="1000"/>
             </basic>
-            <one-to-one name="answer" optional="true">
+            <basic name="type">
+                <column name="type" nullable="false"/>
+                <!-- Например, хранить enum как строку -->
+                <enumerated>STRING</enumerated>
+            </basic>
+            <many-to-one name="lesson" fetch="LAZY">
+                <join-column name="lesson_id" nullable="false"/>
+            </many-to-one>
+            <one-to-many name="options" mapped-by="question" fetch="LAZY" orphan-removal="true">
                 <cascade>
                     <cascade-all/>
                 </cascade>
-                <join-column name="answer_id"/>
-            </one-to-one>
+            </one-to-many>
         </attributes>
     </entity>
+
+    <!-- AnswerOption -->
+    <entity class="AnswerOption" access="PROPERTY">
+        <table name="answer_option"/>
+        <attributes>
+            <id name="id">
+                <column name="id"/>
+                <generated-value strategy="IDENTITY"/>
+            </id>
+            <basic name="text">
+                <column name="text" nullable="false" length="1000"/>
+            </basic>
+            <basic name="correct">
+                <column name="is_correct" nullable="false"/>
+            </basic>
+            <many-to-one name="question" fetch="LAZY">
+                <join-column name="question_id" nullable="false"/>
+            </many-to-one>
+        </attributes>
+    </entity>
+
+
 
 
 
