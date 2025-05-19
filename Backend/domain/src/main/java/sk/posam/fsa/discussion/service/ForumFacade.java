@@ -14,7 +14,7 @@ public interface ForumFacade {
 
     Collection<Post> getRootPosts(long topicId, int page, int size);
     Post getPost(long id);
-    void createPost(Post post);
+    Post createPost(Post post);
     Post reply(Long parentPostId, Post reply);
     void updatePost(Post post);
     void deletePost(long id);

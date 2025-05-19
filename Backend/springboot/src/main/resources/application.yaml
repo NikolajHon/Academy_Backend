@@ -32,6 +32,15 @@
 #    org.hibernate.SQL: DEBUG
 #    org.hibernate.type.descriptor.sql: TRACE
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: tehniceskijuniversitet@gmail.com
+    password: dnho wgqu tmet vntc
+    properties.mail.smtp:
+      auth: true
+      starttls.enable: true
+
   datasource:
     url: jdbc:postgresql://localhost:5432/PosAm
     username: postgres
@@ -66,3 +75,6 @@ logging:
   level:
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql: TRACE
+discussion:
+  mail:
+    from: "forum@example.com"
