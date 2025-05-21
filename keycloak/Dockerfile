@@ -1,6 +1,6 @@
 FROM quay.io/keycloak/keycloak:23.0
 # Must add json files before import, volume is not mounted yet
-ADD ./realms/realm-fsa.json /opt/keycloak/data/import/realm.json
+ADD realms/realm-fsa.json /opt/keycloak/data/import/realm.json
 # Import all files
 RUN /opt/keycloak/bin/kc.sh import --dir=/opt/keycloak/data/import/ --override true; exit 0
 # Start image
