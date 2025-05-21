@@ -1,7 +1,7 @@
 stages:
   - build
 variables:
-  CONTAINER_REGISTRY: "fsahoncharenkoregistry.azurecr.io"
+  CONTAINER_REGISTRY: "https://fsahoncharenkoregistry.azurecr.io"
   DOCKER_REPOSITORY: "fsahoncharenkoregistry.azurecr.io"
   IMAGE_NAME: "fsa-backend"
   DOCKER_DRIVER: overlay2
