@@ -725,6 +725,17 @@ paths:
 
 components:
   schemas:
+    CourseSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        description:
+          type: string
+      required: [ id, name ]
     CreateTopicRequest:
       type: object
       required: [ title ]
@@ -1196,7 +1207,7 @@ components:
         courses:
           type: array
           items:
-            $ref: '#/components/schemas/Course'
+            $ref: '#/components/schemas/CourseSummary'
 
     CoursesResponse:
       type: object
