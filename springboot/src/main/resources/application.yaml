@@ -33,7 +33,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: https://20.223.168.156.nip.io/auth/realms/Academia_project
+          issuer-uri: https://clg-posam.com/auth/realms/Academia_project
 
 jdoodle:
   api-url: https://api.jdoodle.com/v1/execute
