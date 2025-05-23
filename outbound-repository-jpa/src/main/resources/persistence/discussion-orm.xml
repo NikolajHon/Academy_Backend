@@ -140,8 +140,36 @@
                     <cascade-all/>
                 </cascade>
             </one-to-many>
+            <one-to-many name="videoMaterials"
+                         mapped-by="lesson"
+                         fetch="LAZY"
+                         orphan-removal="true">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
         </attributes>
     </entity>
+    <!-- VideoMaterial -->
+    <entity class="VideoMaterial" access="PROPERTY">
+        <table name="video_material"/>
+        <attributes>
+            <id name="id">
+                <column name="id"/>
+                <generated-value strategy="IDENTITY"/>
+            </id>
+            <basic name="title">
+                <column name="title" nullable="false" length="255"/>
+            </basic>
+            <basic name="url">
+                <column name="url" nullable="false" length="1000"/>
+            </basic>
+            <many-to-one name="lesson" fetch="LAZY">
+                <join-column name="lesson_id" nullable="false"/>
+            </many-to-one>
+        </attributes>
+    </entity>
+
     <!-- Course -->
     <entity class="Course" access="PROPERTY">
         <table name="course"/>

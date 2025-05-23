@@ -9,6 +9,14 @@ public class Lesson {
     private String content;
     private Course course;
     private List<Assignment> assignments = new ArrayList<>();
+    private List<VideoMaterial> videoMaterials = new ArrayList<>();
+
+    public List<VideoMaterial> getVideoMaterials() {
+        return videoMaterials;
+    }
+    public void setVideoMaterials(List<VideoMaterial> videoMaterials) {
+        this.videoMaterials = videoMaterials;
+    }
 
     public Long getId() { return id; }
 

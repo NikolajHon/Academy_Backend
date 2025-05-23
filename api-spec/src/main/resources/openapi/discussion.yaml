@@ -5,6 +5,81 @@ info:
   description: API pre správu diskusných príspevkov a úloh k lekciám.
 
 paths:
+  /video/{lessonId}/video-materials/{videoMaterialId}:
+    delete:
+      summary: Delete a video material from a lesson
+      operationId: deleteVideoMaterial
+      tags:
+        - Lesson
+      parameters:
+        - name: lessonId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: videoMaterialId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Video material deleted
+        '404':
+          description: Lesson or VideoMaterial not found
+  /video/{lessonId}/video-materials:
+    get:
+      summary: Get all video materials for a lesson
+      operationId: getVideoMaterialsByLesson
+      tags:
+        - Lesson
+      parameters:
+        - name: lessonId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: List of video materials for the lesson
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VideoMaterial'
+        '404':
+          description: Lesson not found
+
+    post:
+      summary: Create a new video material for a lesson
+      operationId: createVideoMaterial
+      tags:
+        - Lesson
+      parameters:
+        - name: lessonId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateVideoMaterialRequest'
+      responses:
+        '201':
+          description: Video material created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VideoMaterial'
+
   /lessons/{lessonId}/questions:
     get:
       summary: Get all questions in a lesson
@@ -725,6 +800,35 @@ paths:
 
 components:
   schemas:
+    CreateVideoMaterialRequest:
+      type: object
+      required:
+        - title
+        - url
+      properties:
+        title:
+          type: string
+          description: "Video Title"
+        url:
+          type: string
+          description: "Video link"
+
+    VideoMaterial:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: "Unique video identifier"
+        title:
+          type: string
+        url:
+          type: string
+        lessonId:
+          type: integer
+          format: int64
+          description: "ID of the lesson to which the video is linked"
+
     CourseSummary:
       type: object
       properties:
@@ -1125,7 +1229,6 @@ components:
         correct:
           type: boolean
 
-    # ——— Обновление Lesson, чтобы отдать вопросы вместе с заданиями ———
 
     Lesson:
       type: object
