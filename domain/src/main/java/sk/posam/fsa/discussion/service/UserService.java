@@ -50,5 +50,10 @@ public class UserService implements UserFacade {
         }
     }
 
+    @Override
+    public void deleteUser(Long id) {
+        userRepository.delete(id);
+    }
+
 
 }

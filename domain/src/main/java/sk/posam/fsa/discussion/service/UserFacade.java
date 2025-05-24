@@ -12,5 +12,5 @@ public interface UserFacade {
     Collection<User> readAll();
     void create(User user);
     void enrollUserToCourse(Long userId, Long courseId);
-
+    void deleteUser(Long id);
 }

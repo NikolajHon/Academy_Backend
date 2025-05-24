@@ -35,4 +35,11 @@ public class JpaUserRepositoryAdapter implements UserRepository {
     public void create(User user) {
         userSpringDataRepository.save(user);
     }
+
+    @Override
+    public void delete(long id) {
+
+        userSpringDataRepository.deleteById(id);
+    }
+
 }

@@ -5,6 +5,24 @@ info:
   description: API pre správu diskusných príspevkov a úloh k lekciám.
 
 paths:
+  /users/{userId}:
+    delete:
+      summary: Delete a user
+      operationId: deleteUser
+      tags:
+        - User
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: User deleted successfully
+        '404':
+          description: User not found
   /courses/{courseId}/users/{userId}/progress:
     get:
       summary: Receive all completed user lessons within the course
@@ -1365,13 +1383,14 @@ components:
           items:
             $ref: '#/components/schemas/Lesson'
 
-    CreateUserRequest:                                 # ← вот он
+    CreateUserRequest:
       type: object
       required:
         - givingName
         - familyName
         - email
         - role
+        - keycloakId
       properties:
         givingName:
           type: string
@@ -1384,6 +1403,9 @@ components:
           enum:
             - Student
             - Teacher
+        keycloakId:
+          type: string
+          description: "Keycloak subject (sub) identifier"
 
     User:
       type: object
@@ -1397,6 +1419,9 @@ components:
           type: string
         email:
           type: string
+        keycloakId:
+          type: string
+          description: "Keycloak subject (sub) identifier"
         role:
           type: string
           enum:

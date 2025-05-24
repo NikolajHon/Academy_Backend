@@ -9,7 +9,6 @@ public class Topic {
     private String title;
     private TopicStatus status = TopicStatus.OPEN;
     private Course course;
-    private User createdBy;
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime lastActivityAt = createdAt;
     private List<Post> posts = new ArrayList<>();
@@ -28,14 +27,6 @@ public class Topic {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public User getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
     }
 
     public Long getId() {

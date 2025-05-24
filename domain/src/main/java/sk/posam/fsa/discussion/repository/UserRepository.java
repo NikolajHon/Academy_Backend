@@ -10,4 +10,5 @@ public interface UserRepository {
     Optional<User> get(String email);
     Collection<User> readAll();
     void create(User user);
+    void delete(long id);
 }

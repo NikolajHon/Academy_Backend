@@ -1,5 +1,6 @@
 package sk.posam.fsa.discussion;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class User {
@@ -9,7 +10,25 @@ public class User {
     private String email;
     private UserRole role;
     private int rating;
+    private String keycloakId;
     private List<Course> courses;
+    private List<Post> posts = new ArrayList<>();
+
+    public String getKeycloakId() {
+        return keycloakId;
+    }
+
+    public void setKeycloakId(String keycloakId) {
+        this.keycloakId = keycloakId;
+    }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
 
     public String getGivingName() { return givingName; }
     public List<Course> getCourses() { return courses; }

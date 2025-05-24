@@ -12,14 +12,12 @@ import java.util.List;
 public interface TopicMapper {
 
     @Mapping(target = "courseId",     source = "course.id")
-    @Mapping(target = "createdById",  source = "createdBy.id")
     TopicDto toDto(Topic entity);
 
     List<TopicDto> toDto(Collection<Topic> entities);
 
     @Mapping(target = "id",        ignore = true)
-    @Mapping(target = "course",    ignore = true)   // заполняем в сервисе
-    @Mapping(target = "createdBy", ignore = true)
+    @Mapping(target = "course",    ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "status",    constant = "OPEN")
     Topic toEntity(CreateTopicRequestDto dto);

@@ -38,10 +38,6 @@
                 <join-column name="course_id" nullable="false"/>
             </many-to-one>
 
-            <many-to-one name="createdBy" fetch="EAGER">
-                <join-column name="created_by_id" nullable="false"/>
-            </many-to-one>
-
             <one-to-many name="posts" mapped-by="topic" fetch="LAZY" orphan-removal="true">
                 <cascade>
                     <cascade-all/>
@@ -252,6 +248,7 @@
 
 
     <!-- User -->
+    <!-- User -->
     <entity class="User" access="PROPERTY">
         <table name="&quot;user&quot;"/>
         <attributes>
@@ -259,30 +256,46 @@
                 <column name="id"/>
                 <generated-value strategy="IDENTITY"/>
             </id>
+
             <basic name="givingName">
                 <column name="giving_name"/>
             </basic>
             <basic name="familyName">
                 <column name="family_name"/>
             </basic>
+
             <basic name="email">
                 <column name="email" nullable="false" unique="true"/>
             </basic>
-            <basic name="password">
-                <column name="password"/>
+
+            <basic name="keycloakId">
+                <column name="keycloak_id" nullable="false" unique="true"/>
             </basic>
             <basic name="role">
                 <column name="role" nullable="false"/>
                 <convert converter="sk.posam.fsa.discussion.jpa.UserRoleConverter"/>
             </basic>
+
+            <basic name="rating">
+                <column name="rating" nullable="false"/>
+            </basic>
+
             <many-to-many name="courses">
                 <join-table name="user_course">
                     <join-column name="user_id" referenced-column-name="id"/>
                     <inverse-join-column name="course_id" referenced-column-name="id"/>
                 </join-table>
             </many-to-many>
+
+            <!-- Явная OneToMany для постов -->
+            <one-to-many name="posts" mapped-by="author" fetch="LAZY" orphan-removal="true">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
         </attributes>
     </entity>
+
 
     <!-- Question -->
     <entity class="Question" access="PROPERTY">

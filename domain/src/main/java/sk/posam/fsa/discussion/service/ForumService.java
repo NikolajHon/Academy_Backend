@@ -40,7 +40,6 @@ public class ForumService implements ForumFacade {
         Course course = courseRepository.getCourse(topic.getCourse().getId());
         topic.setCourse(course);
 
-        topic.setCreatedBy(currentUser.getCurrentUser());
         topic.setCreatedAt(LocalDateTime.now());
         topic.setStatus(TopicStatus.OPEN);
 
