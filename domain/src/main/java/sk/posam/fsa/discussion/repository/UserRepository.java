@@ -11,4 +11,5 @@ public interface UserRepository {
     Collection<User> readAll();
     void create(User user);
     void delete(long id);
+    Optional<User> getByKeycloakId(String keycloakId);
 }

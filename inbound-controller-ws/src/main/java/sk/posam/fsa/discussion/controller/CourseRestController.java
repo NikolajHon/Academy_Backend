@@ -15,6 +15,7 @@ import sk.posam.fsa.discussion.service.*;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 public class CourseRestController implements CoursesApi {
@@ -24,57 +25,57 @@ public class CourseRestController implements CoursesApi {
     private final CourseMapper               courseMapper;
     private final LessonMapper               lessonMapper;
     private final TopicMapper                topicMapper;
-    private final CurrentUserDetailService   currentUserDetailService;
     private final CourseProgressFacade progressFacade;
-
+    private final UserFacade               userFacade;
     public CourseRestController(
             CourseFacade courseFacade,
             ForumFacade forumFacade,
             CourseMapper courseMapper,
             LessonMapper lessonMapper,
             TopicMapper topicMapper,
-            CurrentUserDetailService currentUserDetailService,
-            CourseProgressFacade progressFacade
+            CourseProgressFacade progressFacade, UserFacade userFacade
     ) {
         this.courseFacade             = courseFacade;
         this.forumFacade              = forumFacade;
         this.courseMapper             = courseMapper;
         this.lessonMapper             = lessonMapper;
         this.topicMapper              = topicMapper;
-        this.currentUserDetailService = currentUserDetailService;
         this.progressFacade           = progressFacade;
+        this.userFacade = userFacade;
     }
+
 
     @Override
     public ResponseEntity<LessonListResponseDto> getCompletedCourseLessons(
             Long courseId,
-            Long userId
+            String keycloakId
     ) {
-        Long current = currentUserDetailService.getCurrentUser().getId();
-        if (!current.equals(userId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
-        }
+
+        Long userId = userFacade.getByKeycloakId(keycloakId)
+                .map(u -> u.getId())
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
+                );
 
         List<Long> lessons = progressFacade.getCompletedLessonIds(courseId, userId);
-
-        LessonListResponseDto resp = new LessonListResponseDto();
-        resp.setLessons(lessons);
+        LessonListResponseDto resp = new LessonListResponseDto().lessons(lessons);
         return ResponseEntity.ok(resp);
     }
 
     @Override
     public ResponseEntity<Void> addCompletedLesson(
             Long courseId,
-            Long userId,
-            AddLessonRequestDto addLessonRequestDto
+            String keycloakId,
+            Long lessonId
     ) {
-        Long current = currentUserDetailService.getCurrentUser().getId();
-        if (!current.equals(userId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot modify another user’s progress");
-        }
+        Long userId = userFacade.getByKeycloakId(keycloakId)
+            .map(u -> u.getId())
+            .orElseThrow(() ->
+                    new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
+            );
 
         try {
-            progressFacade.addLessonProgress(courseId, userId, addLessonRequestDto.getLessonId());
+            progressFacade.addLessonProgress(courseId, userId, lessonId);
         } catch (EntityNotFoundException ex) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage(), ex);
         }
@@ -85,13 +86,15 @@ public class CourseRestController implements CoursesApi {
     @Override
     public ResponseEntity<Void> removeCompletedLesson(
             Long courseId,
-            Long userId,
+            String keycloakId,
             Long lessonId
     ) {
-        Long current = currentUserDetailService.getCurrentUser().getId();
-        if (!current.equals(userId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot modify another user’s progress");
-        }
+
+        Long userId = userFacade.getByKeycloakId(keycloakId)
+                .map(u -> u.getId())
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
+                );
 
         try {
             progressFacade.removeLessonProgress(courseId, userId, lessonId);
@@ -123,6 +126,7 @@ public class CourseRestController implements CoursesApi {
         resp.setCourses(dtos);
         return ResponseEntity.ok(resp);
     }
+
 
     @Override
     public ResponseEntity<List<LessonDto>> getLessonsByCourseId(Long id) {

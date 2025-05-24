@@ -45,7 +45,6 @@ public class UserRestController implements UsersApi {
         return ResponseEntity.ok().build();
     }
 
-
     @Override
     public ResponseEntity<UsersResponseDto> getAllUsers() {
         List<User> users = new ArrayList<>(userFacade.readAll());

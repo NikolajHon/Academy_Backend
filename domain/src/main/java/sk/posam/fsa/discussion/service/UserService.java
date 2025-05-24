@@ -54,6 +54,11 @@ public class UserService implements UserFacade {
     public void deleteUser(Long id) {
         userRepository.delete(id);
     }
+    @Override
+    public Optional<User> getByKeycloakId(String keycloakId) {
+        // Предполагаем, что UserRepository умеет искать по полю keycloakId
+        return userRepository.getByKeycloakId(keycloakId);
+    }
 
 
 }

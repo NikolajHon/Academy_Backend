@@ -41,5 +41,9 @@ public class JpaUserRepositoryAdapter implements UserRepository {
 
         userSpringDataRepository.deleteById(id);
     }
+    @Override
+    public Optional<User> getByKeycloakId(String keycloakId) {
+        return userSpringDataRepository.findByKeycloakId(keycloakId);
+    }
 
 }

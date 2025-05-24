@@ -13,4 +13,5 @@ public interface UserFacade {
     void create(User user);
     void enrollUserToCourse(Long userId, Long courseId);
     void deleteUser(Long id);
+    Optional<User> getByKeycloakId(String keycloakId);
 }

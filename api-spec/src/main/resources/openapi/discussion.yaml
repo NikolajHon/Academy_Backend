@@ -37,9 +37,9 @@ paths:
         - name: userId
           in: path
           required: true
+          description: Keycloak user ID
           schema:
-            type: integer
-            format: int64
+            type: string
       responses:
         '200':
           description: List of lesson IDs
@@ -48,6 +48,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/LessonListResponse'
 
+  /courses/{courseId}/users/{userId}/progress/lessons/{lessonId}:
     post:
       summary: Add the user's lesson to the list of completed lessons
       operationId: addCompletedLesson
@@ -61,21 +62,19 @@ paths:
         - name: userId
           in: path
           required: true
+          description: Keycloak user ID
+          schema:
+            type: string
+        - name: lessonId
+          in: path
+          required: true
           schema:
             type: integer
             format: int64
-      requestBody:
-        description: Identifier of the lesson to be marked as passed
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AddLessonRequest'
       responses:
         '204':
           description: Lesson successfully added
 
-  /courses/{courseId}/users/{userId}/progress/lessons/{lessonId}:
     delete:
       summary: Remove a lesson from the passed list
       operationId: removeCompletedLesson
@@ -89,9 +88,9 @@ paths:
         - name: userId
           in: path
           required: true
+          description: Keycloak user ID
           schema:
-            type: integer
-            format: int64
+            type: string
         - name: lessonId
           in: path
           required: true
@@ -103,6 +102,7 @@ paths:
           description: The lesson has been successfully deleted
 
   /video/{lessonId}/video-materials/{videoMaterialId}:
+
     delete:
       summary: Delete a video material from a lesson
       operationId: deleteVideoMaterial
@@ -897,15 +897,6 @@ paths:
 
 components:
   schemas:
-    AddLessonRequest:
-      type: object
-      required:
-        - lessonId
-      properties:
-        lessonId:
-          type: integer
-          format: int64
-          description: ID of the lesson we are adding
     LessonListResponse:
       type: object
       properties:
