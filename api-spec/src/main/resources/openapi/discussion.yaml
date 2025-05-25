@@ -5,6 +5,54 @@ info:
   description: API pre správu diskusných príspevkov a úloh k lekciám.
 
 paths:
+  /users/{courseId}/ratings:
+    get:
+      summary: Getting course user ratings
+      operationId: getUserRatingsByCourse
+      parameters:
+        - name: courseId
+          in: path
+          description: ID курса
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: List of user ratings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserRating'
+        '404':
+          description: Course not found
+
+    post:
+      summary: Setting the user rating for the course
+      operationId: setUserRatingsByCourse
+      parameters:
+        - name: courseId
+          in: path
+          description: ID курса
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetUserRatingRequest'
+      responses:
+        '204':
+          description: The rating has been successfully set
+        '400':
+          description: Incorrect request data
+        '404':
+          description: Course or user not found
   /users/{userId}:
     delete:
       summary: Delete a user
@@ -897,6 +945,32 @@ paths:
 
 components:
   schemas:
+    UserRating:
+      type: object
+      description: User rating for the course
+      properties:
+        userId:
+          type: string
+          description: user ID
+        rating:
+          type: integer
+          description: Rating value (e.g. from 1 to 5)
+      required:
+        - userId
+        - rating
+      
+    SetUserRatingRequest:
+      type: object
+      description: Request to set the user's rating
+      properties:
+        userId:
+          type: string
+          description: user ID
+        rating:
+          type: integer
+      required:
+        - userId
+        - rating
     LessonListResponse:
       type: object
       properties:

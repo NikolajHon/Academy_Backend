@@ -9,7 +9,6 @@ public class User {
     private String familyName;
     private String email;
     private UserRole role;
-    private int rating;
     private String keycloakId;
     private List<Course> courses;
     private List<Post> posts = new ArrayList<>();
@@ -71,13 +70,5 @@ public class User {
 
     public void setRole(UserRole role) {
         this.role = role;
-    }
-
-    public int getRating() {
-        return rating;
-    }
-
-    public void setRating(int rating) {
-        this.rating = rating;
     }
 }

@@ -6,11 +6,11 @@ import org.springframework.stereotype.Component;
 import sk.posam.fsa.discussion.User;
 import sk.posam.fsa.discussion.UserRole;
 import sk.posam.fsa.discussion.rest.dto.UserDto;
-import sk.posam.fsa.discussion.service.CurrentUserPort;
+import sk.posam.fsa.discussion.repository.CurrentUserRepository;
 import sk.posam.fsa.discussion.service.UserFacade;
 
 @Component
-public class CurrentUserDetailService implements CurrentUserPort {
+public class CurrentUserDetailService implements CurrentUserRepository {
 
     private final UserFacade userFacade;
 

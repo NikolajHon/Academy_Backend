@@ -5,19 +5,18 @@ import sk.posam.fsa.discussion.repository.*;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.logging.Logger;
 
 public class ForumService implements ForumFacade {
     private final TopicRepository  topicRepository;
     private final PostRepository   postRepository;
     private final CourseRepository courseRepository;
-    private final CurrentUserPort  currentUser;
+    private final CurrentUserRepository currentUser;
     private final EmailSenderRepository emailSenderRepository;
 
     public ForumService(TopicRepository topicRepository,
                         PostRepository  postRepository,
                         CourseRepository courseRepository,
-                        CurrentUserPort  currentUser, EmailSenderRepository emailSenderRepository) {
+                        CurrentUserRepository currentUser, EmailSenderRepository emailSenderRepository) {
 
         this.topicRepository  = topicRepository;
         this.postRepository   = postRepository;

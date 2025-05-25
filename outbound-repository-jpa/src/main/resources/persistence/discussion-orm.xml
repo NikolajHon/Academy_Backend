@@ -208,6 +208,15 @@
             <basic name="description">
                 <column name="description" length="1000"/>
             </basic>
+            <one-to-many name="userRatings"
+                         mapped-by="course"
+                         fetch="LAZY"
+                         orphan-removal="true">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
+
             <one-to-many name="lessons" mapped-by="course" fetch="EAGER"/>
             <many-to-many name="users" mapped-by="courses"/>
         </attributes>
@@ -246,8 +255,48 @@
         </attributes>
     </entity>
 
+    <embeddable class="sk.posam.fsa.discussion.UserRatingId">
+        <attributes>
+            <basic name="courseId">
+                <column name="course_id"/>
+            </basic>
+            <basic name="userId">
+                <column name="user_id"/>
+            </basic>
+        </attributes>
+    </embeddable>
+    <!-- UserRating -->
+    <entity class="sk.posam.fsa.discussion.UserRating" access="PROPERTY">
+        <table name="user_rating"/>
+        <attributes>
+            <!-- встроенный составной ключ -->
+            <embedded-id name="userRatingId">
+                <attribute-override name="courseId">
+                    <column name="course_id"/>
+                </attribute-override>
+                <attribute-override name="userId">
+                    <column name="user_id"/>
+                </attribute-override>
+            </embedded-id>
 
-    <!-- User -->
+            <!-- само поле рейтинга -->
+            <basic name="rating">
+                <column name="rating" nullable="false"/>
+            </basic>
+
+            <!-- связь на курс -->
+            <many-to-one name="course" fetch="LAZY">
+                <!-- эти insertable/updatable нужны, т.к. ключ уже хранит курс -->
+                <join-column name="course_id" insertable="false" updatable="false"/>
+            </many-to-one>
+
+            <!-- связь на пользователя -->
+            <many-to-one name="user" fetch="LAZY">
+                <join-column name="user_id" insertable="false" updatable="false"/>
+            </many-to-one>
+        </attributes>
+    </entity>
+
     <!-- User -->
     <entity class="User" access="PROPERTY">
         <table name="&quot;user&quot;"/>
@@ -275,11 +324,6 @@
                 <column name="role" nullable="false"/>
                 <convert converter="sk.posam.fsa.discussion.jpa.UserRoleConverter"/>
             </basic>
-
-            <basic name="rating">
-                <column name="rating" nullable="false"/>
-            </basic>
-
             <many-to-many name="courses">
                 <join-table name="user_course">
                     <join-column name="user_id" referenced-column-name="id"/>
@@ -287,7 +331,14 @@
                 </join-table>
             </many-to-many>
 
-            <!-- Явная OneToMany для постов -->
+            <one-to-many name="userRatings"
+                         mapped-by="user"
+                         fetch="LAZY"
+                         orphan-removal="true">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
             <one-to-many name="posts" mapped-by="author" fetch="LAZY" orphan-removal="true">
                 <cascade>
                     <cascade-all/>
