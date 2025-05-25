@@ -5,37 +5,16 @@ info:
   description: API pre správu diskusných príspevkov a úloh k lekciám.
 
 paths:
-  /users/{courseId}/ratings:
-    get:
-      summary: Getting course user ratings
-      operationId: getUserRatingsByCourse
+  /users/{userId}/courses/{courseId}/rating:
+    put:
+      tags:
+        - CourseProgress
+      summary: Set user rating on a course
+      operationId: setUserCourseRating
       parameters:
+        - $ref: '#/components/parameters/userId'
         - name: courseId
           in: path
-          description: ID курса
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: List of user ratings
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UserRating'
-        '404':
-          description: Course not found
-
-    post:
-      summary: Setting the user rating for the course
-      operationId: setUserRatingsByCourse
-      parameters:
-        - name: courseId
-          in: path
-          description: ID курса
           required: true
           schema:
             type: integer
@@ -45,14 +24,55 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SetUserRatingRequest'
+              $ref: '#/components/schemas/Rating'
       responses:
-        '204':
-          description: The rating has been successfully set
-        '400':
-          description: Incorrect request data
-        '404':
-          description: Course or user not found
+        '200':
+          description: Rating updated
+
+    get:
+      tags:
+        - CourseProgress
+      summary: Get user rating on a course
+      operationId: getUserCourseRating
+      parameters:
+        - $ref: '#/components/parameters/userId'
+        - name: courseId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Rating retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rating'
+
+  /users/courses/{courseId}/ratings:
+    get:
+      tags:
+        - CourseProgress
+      summary: List all CourseProgress for a course (with full user objects)
+      operationId: listCourseProgressByCourseWithUser
+      parameters:
+        - name: courseId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Array of CourseProgress entities enriched with User
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CourseProgressWithUser'
+
   /users/{userId}:
     delete:
       summary: Delete a user
@@ -944,32 +964,80 @@ paths:
 
 
 components:
+  parameters:
+    courseId:
+      name: courseId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+    userId:
+      name: userId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
   schemas:
-    UserRating:
+    CourseProgressWithUser:
       type: object
-      description: User rating for the course
       properties:
-        userId:
-          type: string
-          description: user ID
+        courseProgressId:
+          $ref: '#/components/schemas/CourseProgressId'
+        user:
+          $ref: '#/components/schemas/User'
+        lessonIds:
+          type: array
+          items:
+            type: integer
+            format: int64
         rating:
           type: integer
-          description: Rating value (e.g. from 1 to 5)
+          format: int32
       required:
-        - userId
+        - courseProgressId
+        - user
+        - lessonIds
         - rating
-      
-    SetUserRatingRequest:
+    CourseProgress:
       type: object
-      description: Request to set the user's rating
       properties:
-        userId:
-          type: string
-          description: user ID
+        courseProgressId:
+          $ref: '#/components/schemas/CourseProgressId'
+        lessonIds:
+          type: array
+          items:
+            type: integer
+            format: int64
         rating:
           type: integer
+          format: int32
       required:
+        - courseProgressId
+        - lessonIds
+        - rating
+
+    CourseProgressId:
+      type: object
+      properties:
+        courseId:
+          type: integer
+          format: int64
+        userId:
+          type: integer
+          format: int64
+      required:
+        - courseId
         - userId
+
+    Rating:
+      type: object
+      properties:
+        rating:
+          type: integer
+          format: int32
+      required:
         - rating
     LessonListResponse:
       type: object

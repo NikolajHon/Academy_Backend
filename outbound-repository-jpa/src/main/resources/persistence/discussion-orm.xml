@@ -255,47 +255,7 @@
         </attributes>
     </entity>
 
-    <embeddable class="sk.posam.fsa.discussion.UserRatingId">
-        <attributes>
-            <basic name="courseId">
-                <column name="course_id"/>
-            </basic>
-            <basic name="userId">
-                <column name="user_id"/>
-            </basic>
-        </attributes>
-    </embeddable>
-    <!-- UserRating -->
-    <entity class="sk.posam.fsa.discussion.UserRating" access="PROPERTY">
-        <table name="user_rating"/>
-        <attributes>
-            <!-- встроенный составной ключ -->
-            <embedded-id name="userRatingId">
-                <attribute-override name="courseId">
-                    <column name="course_id"/>
-                </attribute-override>
-                <attribute-override name="userId">
-                    <column name="user_id"/>
-                </attribute-override>
-            </embedded-id>
 
-            <!-- само поле рейтинга -->
-            <basic name="rating">
-                <column name="rating" nullable="false"/>
-            </basic>
-
-            <!-- связь на курс -->
-            <many-to-one name="course" fetch="LAZY">
-                <!-- эти insertable/updatable нужны, т.к. ключ уже хранит курс -->
-                <join-column name="course_id" insertable="false" updatable="false"/>
-            </many-to-one>
-
-            <!-- связь на пользователя -->
-            <many-to-one name="user" fetch="LAZY">
-                <join-column name="user_id" insertable="false" updatable="false"/>
-            </many-to-one>
-        </attributes>
-    </entity>
 
     <!-- User -->
     <entity class="User" access="PROPERTY">

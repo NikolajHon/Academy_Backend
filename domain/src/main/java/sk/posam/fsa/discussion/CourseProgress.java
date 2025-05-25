@@ -8,7 +8,7 @@ public class CourseProgress {
 
     private CourseProgressId courseProgressId;
     private List<Long> lessonIds = new ArrayList<>();
-
+    private int rating;
     public CourseProgress(CourseProgressId courseProgressId) {
         this.courseProgressId = courseProgressId;
     }
@@ -20,12 +20,12 @@ public class CourseProgress {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         CourseProgress that = (CourseProgress) o;
-        return Objects.equals(courseProgressId, that.courseProgressId) && Objects.equals(lessonIds, that.lessonIds);
+        return rating == that.rating && Objects.equals(courseProgressId, that.courseProgressId) && Objects.equals(lessonIds, that.lessonIds);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(courseProgressId, lessonIds);
+        return Objects.hash(courseProgressId, lessonIds, rating);
     }
 
     public CourseProgressId getCourseProgressId() {
@@ -44,4 +44,11 @@ public class CourseProgress {
         this.lessonIds = lessonIds;
     }
 
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
 }

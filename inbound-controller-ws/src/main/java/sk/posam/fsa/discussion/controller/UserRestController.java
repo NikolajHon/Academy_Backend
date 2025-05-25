@@ -4,17 +4,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import sk.posam.fsa.discussion.CourseProgress;
+import sk.posam.fsa.discussion.CourseProgressId;
 import sk.posam.fsa.discussion.User;
-import sk.posam.fsa.discussion.UserRating;
+import sk.posam.fsa.discussion.mapper.CourseProgressMapper;
 import sk.posam.fsa.discussion.mapper.UserMapper;
 import sk.posam.fsa.discussion.rest.api.UsersApi;
-import sk.posam.fsa.discussion.rest.dto.CreateUserRequestDto;
-import sk.posam.fsa.discussion.rest.dto.SetUserRatingRequestDto;
-import sk.posam.fsa.discussion.rest.dto.UserDto;
-import sk.posam.fsa.discussion.rest.dto.UserRatingDto;
-import sk.posam.fsa.discussion.rest.dto.UsersResponseDto;
+import sk.posam.fsa.discussion.rest.dto.*;
+import sk.posam.fsa.discussion.service.CourseProgressFacade;
 import sk.posam.fsa.discussion.service.UserFacade;
-import sk.posam.fsa.discussion.service.UserRatingFacade;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,15 +21,16 @@ import java.util.stream.Collectors;
 public class UserRestController implements UsersApi {
 
     private final UserFacade userFacade;
-    private final UserRatingFacade userRatingFacade;
     private final UserMapper userMapper;
+    private final CourseProgressFacade courseProgressFacade;
+    private final CourseProgressMapper courseProgressMapper;
 
     public UserRestController(UserFacade userFacade,
-                              UserRatingFacade userRatingFacade,
-                              UserMapper userMapper) {
+                              UserMapper userMapper, CourseProgressFacade courseProgressFacade, CourseProgressMapper courseProgressMapper) {
         this.userFacade = userFacade;
-        this.userRatingFacade = userRatingFacade;
         this.userMapper = userMapper;
+        this.courseProgressFacade = courseProgressFacade;
+        this.courseProgressMapper = courseProgressMapper;
     }
 
     @Override
@@ -49,7 +48,11 @@ public class UserRestController implements UsersApi {
 
     @Override
     public ResponseEntity<Void> enrollUserToCourse(Long userId, Long courseId) {
-        userFacade.enrollUserToCourse(userId, courseId);
+        userFacade.get(userId);
+        CourseProgressId progressId = new CourseProgressId(courseId, userId);
+        CourseProgress   progress   = new CourseProgress(progressId);
+        courseProgressFacade.save(progress);
+
         return ResponseEntity.ok().build();
     }
 
@@ -63,33 +66,46 @@ public class UserRestController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<List<UserRatingDto>> getUserRatingsByCourse(Long courseId) {
-        List<UserRating> ratings = userRatingFacade.getUserRatingsByCourse(courseId);
-        List<UserRatingDto> dtoList = ratings.stream()
-                .map(r -> {
-                    UserRatingDto dto = new UserRatingDto();
-                    dto.setUserId(r.getUserRatingId().getUserId().toString());
-                    dto.setRating(r.getRating());
+    public ResponseEntity<RatingDto> getUserCourseRating(Long userId, Long courseId) {
+        userFacade.get(userId);
+        Integer rating = courseProgressFacade.getCourseRating(courseId, userId);
+        RatingDto dto = new RatingDto().rating(rating);
+        return ResponseEntity.ok(dto);
+    }
+
+    @Override
+    public ResponseEntity<List<CourseProgressWithUserDto>> listCourseProgressByCourseWithUser(Long courseId) {
+        List<CourseProgress> progresses = courseProgressFacade.listCourseProgressByCourse(courseId);
+
+        List<CourseProgressWithUserDto> dtos = progresses.stream()
+                .map(progress -> {
+                    CourseProgressWithUserDto dto = new CourseProgressWithUserDto();
+                    CourseProgressIdDto idDto = new CourseProgressIdDto();
+                    idDto.setCourseId(progress.getCourseProgressId().getCourseId());
+                    idDto.setUserId(progress.getCourseProgressId().getUserId());
+                    dto.setCourseProgressId(idDto);
+
+                    dto.setLessonIds(progress.getLessonIds());
+                    dto.setRating(progress.getRating());
+
+                    User userEntity = userFacade.get(idDto.getUserId());
+                    dto.setUser(userMapper.toDto(userEntity));
+
                     return dto;
                 })
                 .collect(Collectors.toList());
-        return ResponseEntity.ok(dtoList);
-    }
 
+        return ResponseEntity.ok(dtos);
+    }
 
     @Override
-    public ResponseEntity<Void> setUserRatingsByCourse(Long courseId,
-                                                       SetUserRatingRequestDto dto) {
-        Long userId = userFacade.getByKeycloakId(dto.getUserId())
-                .map(u -> u.getId())
-                .orElseThrow(() ->
-                        new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
-                );
-        userRatingFacade.setUserRatingsByCourse(
-                courseId,
-                userId,
-                dto.getRating()
-        );
+    public ResponseEntity<Void> setUserCourseRating(Long userId,
+                                                    Long courseId,
+                                                    RatingDto ratingDto) {
+        userFacade.get(userId);
+        courseProgressFacade.setCourseRating(courseId, userId, ratingDto.getRating());
         return ResponseEntity.ok().build();
     }
+
+
 }

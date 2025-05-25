@@ -5,6 +5,7 @@ import sk.posam.fsa.discussion.CourseProgress;
 import sk.posam.fsa.discussion.CourseProgressId;
 import sk.posam.fsa.discussion.repository.ProgressRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -30,4 +31,10 @@ public class CourseProgressRepositoryAdapter implements ProgressRepository {
     public void delete(CourseProgress progress) {
         repository.delete(progress);
     }
+
+    @Override
+    public List<CourseProgress> findAllByCourseId(Long courseId) {
+        return repository.findAllByCourseProgressIdCourseId(courseId);
+    }
+
 }
