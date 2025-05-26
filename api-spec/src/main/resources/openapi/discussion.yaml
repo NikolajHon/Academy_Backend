@@ -5,14 +5,18 @@ info:
   description: API pre správu diskusných príspevkov a úloh k lekciám.
 
 paths:
-  /users/{userId}/courses/{courseId}/rating:
+  /users/{keycloakId}/courses/{courseId}/rating:
     put:
-      tags:
-        - CourseProgress
+      tags: [ CourseProgress ]
       summary: Set user rating on a course
       operationId: setUserCourseRating
       parameters:
-        - $ref: '#/components/parameters/userId'
+        - name: keycloakId          # было userId
+          in: path
+          required: true
+          description: Keycloak subject (sub)
+          schema:
+            type: string            # был integer(int64)
         - name: courseId
           in: path
           required: true
@@ -30,12 +34,16 @@ paths:
           description: Rating updated
 
     get:
-      tags:
-        - CourseProgress
+      tags: [ CourseProgress ]
       summary: Get user rating on a course
       operationId: getUserCourseRating
       parameters:
-        - $ref: '#/components/parameters/userId'
+        - name: keycloakId
+          in: path
+          required: true
+          description: Keycloak subject (sub)
+          schema:
+            type: string
         - name: courseId
           in: path
           required: true
@@ -49,6 +57,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Rating'
+
 
   /users/courses/{courseId}/ratings:
     get:
@@ -960,6 +969,31 @@ paths:
           description: User enrolled to course
         '404':
           description: User or Course not found
+
+    delete:
+      summary: Unenroll user from course
+      operationId: unenrollUserFromCourse
+      tags:
+        - User
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: courseId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: User unenrolled from course (no content)
+        '404':
+          description: User or Course not found
+
 
 
 

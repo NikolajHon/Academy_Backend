@@ -208,21 +208,13 @@
             <basic name="description">
                 <column name="description" length="1000"/>
             </basic>
-            <one-to-many name="userRatings"
-                         mapped-by="course"
-                         fetch="LAZY"
-                         orphan-removal="true">
-                <cascade>
-                    <cascade-all/>
-                </cascade>
-            </one-to-many>
+
 
             <one-to-many name="lessons" mapped-by="course" fetch="EAGER"/>
             <many-to-many name="users" mapped-by="courses"/>
         </attributes>
     </entity>
 
-    <!-- 1) Описываем составной ключ -->
     <embeddable class="sk.posam.fsa.discussion.CourseProgressId">
         <attributes>
             <basic name="courseId">
@@ -234,11 +226,10 @@
         </attributes>
     </embeddable>
 
-    <!-- Самая важная часть — ваша сущность прогресса -->
     <entity class="sk.posam.fsa.discussion.CourseProgress" access="PROPERTY">
         <table name="course_progress"/>
         <attributes>
-            <!-- Встраиваем составной ключ -->
+            <!-- составной ключ как было -->
             <embedded-id name="courseProgressId">
                 <attribute-override name="courseId">
                     <column name="course_id"/>
@@ -247,13 +238,21 @@
                     <column name="user_id"/>
                 </attribute-override>
             </embedded-id>
-            <!-- И список пройденных уроков с конвертером -->
+
+            <!-- ссылка на User -->
+            <many-to-one name="user" class="sk.posam.fsa.discussion.User" fetch="LAZY" optional="false">
+                <join-column name="user_id" referenced-column-name="id"
+                             insertable="false" updatable="false"/>
+            </many-to-one>
+
+            <!-- список уроков -->
             <basic name="lessonIds" optional="false">
                 <column name="lesson_ids" nullable="false"/>
                 <convert converter="sk.posam.fsa.discussion.jpa.LessonIdListConverter"/>
             </basic>
         </attributes>
     </entity>
+
 
 
 
@@ -291,19 +290,15 @@
                 </join-table>
             </many-to-many>
 
-            <one-to-many name="userRatings"
-                         mapped-by="user"
-                         fetch="LAZY"
-                         orphan-removal="true">
-                <cascade>
-                    <cascade-all/>
-                </cascade>
-            </one-to-many>
             <one-to-many name="posts" mapped-by="author" fetch="LAZY" orphan-removal="true">
                 <cascade>
                     <cascade-all/>
                 </cascade>
             </one-to-many>
+            <one-to-many name="courseProgressList"
+                         class="sk.posam.fsa.discussion.CourseProgress"
+                         mapped-by="user"
+                         orphan-removal="true"/>
         </attributes>
     </entity>
 

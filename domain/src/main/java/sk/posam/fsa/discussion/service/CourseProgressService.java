@@ -85,4 +85,8 @@ public class CourseProgressService implements CourseProgressFacade {
     public List<CourseProgress> listCourseProgressByCourse(Long courseId) {
         return progressRepository.findAllByCourseId(courseId);
     }
+    @Override
+    public void deleteByCourseIdAndUserId(Long courseId, Long userId){
+        progressRepository.deleteByCourseIdAndUserId(courseId, userId);
+    }
 }

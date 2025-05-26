@@ -12,4 +12,5 @@ public interface ProgressRepository {
     CourseProgress save(CourseProgress progress);
     void delete(CourseProgress progress);
     List<CourseProgress> findAllByCourseId(Long courseId);
+    void deleteByCourseIdAndUserId(Long courseId, Long userId);
 }

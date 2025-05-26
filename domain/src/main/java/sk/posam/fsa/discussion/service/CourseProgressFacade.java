@@ -16,4 +16,5 @@ public interface CourseProgressFacade {
     Integer getCourseRating(Long courseId, Long userId);
     void setCourseRating(Long courseId, Long userId, Integer rating);
     List<CourseProgress> listCourseProgressByCourse(Long courseId);
+    void deleteByCourseIdAndUserId(Long courseId, Long userId);
 }

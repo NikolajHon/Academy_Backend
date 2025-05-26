@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class CourseProgressRepositoryAdapter implements ProgressRepository {
+public class JpaCourseProgressRepositoryAdapter implements ProgressRepository {
 
     private final CourseProgressSpringDataRepository repository;
 
-    public CourseProgressRepositoryAdapter(CourseProgressSpringDataRepository repository) {
+    public JpaCourseProgressRepositoryAdapter(CourseProgressSpringDataRepository repository) {
         this.repository = repository;
     }
 
@@ -36,5 +36,11 @@ public class CourseProgressRepositoryAdapter implements ProgressRepository {
     public List<CourseProgress> findAllByCourseId(Long courseId) {
         return repository.findAllByCourseProgressIdCourseId(courseId);
     }
+
+    @Override
+    public void deleteByCourseIdAndUserId(Long courseId, Long userId) {
+        repository.deleteByCourseProgressIdCourseIdAndCourseProgressIdUserId(courseId, userId);
+    }
+
 
 }

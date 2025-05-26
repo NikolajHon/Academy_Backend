@@ -65,8 +65,14 @@ public class UserRestController implements UsersApi {
         return ResponseEntity.ok(response);
     }
 
+
     @Override
-    public ResponseEntity<RatingDto> getUserCourseRating(Long userId, Long courseId) {
+    public ResponseEntity<RatingDto> getUserCourseRating(String keycloakId, Long courseId) {
+        Long userId = userFacade.getByKeycloakId(keycloakId)
+                .map(u -> u.getId())
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
+                );
         userFacade.get(userId);
         Integer rating = courseProgressFacade.getCourseRating(courseId, userId);
         RatingDto dto = new RatingDto().rating(rating);
@@ -99,12 +105,23 @@ public class UserRestController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<Void> setUserCourseRating(Long userId,
+    public ResponseEntity<Void> setUserCourseRating(String keycloakId,
                                                     Long courseId,
                                                     RatingDto ratingDto) {
+        Long userId = userFacade.getByKeycloakId(keycloakId)
+                .map(u -> u.getId())
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
+                );
         userFacade.get(userId);
         courseProgressFacade.setCourseRating(courseId, userId, ratingDto.getRating());
         return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> unenrollUserFromCourse(Long userId, Long courseId) {
+        courseProgressFacade.deleteByCourseIdAndUserId(courseId, userId);
+        return ResponseEntity.noContent().build();
     }
 
 
