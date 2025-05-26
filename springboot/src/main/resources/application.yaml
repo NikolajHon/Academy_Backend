@@ -2,54 +2,6 @@ server:
   servlet:
     context-path: /api
 
-#spring:
-#  mail:
-#    host: smtp.gmail.com
-#    port: 587
-#    username: tehniceskijuniversitet@gmail.com
-#    password: dnho wgqu tmet vntc
-#    properties.mail.smtp:
-#      auth: true
-#      starttls.enable: true
-#  datasource:
-#    url: jdbc:postgresql://fsa-honcharenko-psql.postgres.database.azure.com:5432/fsa-db?sslmode=require
-#    username: fsaadmin@fsa-honcharenko-psql
-#    password: P@ssword12345
-#    driver-class-name: org.postgresql.Driver
-#
-#  jpa:
-#    database-platform: org.hibernate.dialect.PostgreSQLDialect
-#    show-sql: true
-#    generate-ddl: true
-#    hibernate:
-#      ddl-auto: update
-#    mapping-resources:
-#      - persistence/discussion-orm.xml
-#
-#  profiles:
-#    active: keycloak
-#
-#  security:
-#    oauth2:
-#      resourceserver:
-#        jwt:
-#          issuer-uri: https://clg-posam.com/auth/realms/Academia_project
-#          jwk-set-uri: http://localhost:8081/realms/Academia_project/protocol/openid-connect/certs
-#
-#jdoodle:
-#  api-url: https://api.jdoodle.com/v1/execute
-#  client-id: f5a875bea9d3261f9594ea8552e792cc
-#  client-secret: 5f496f47f4d98f0451f7d3eec7311b8eaa24c5d35bb3face94eb40fc8e0e7958
-#
-#logging:
-#  level:
-#    org.hibernate.SQL: DEBUG
-#    org.hibernate.type.descriptor.sql: TRACE
-#discussion:
-#  mail:
-#    from: "forum@example.com"
-#
-
 spring:
   mail:
     host: smtp.gmail.com
@@ -59,11 +11,10 @@ spring:
     properties.mail.smtp:
       auth: true
       starttls.enable: true
-
   datasource:
-    url: jdbc:postgresql://localhost:5432/PosAm
-    username: postgres
-    password: 380631159244Kolya
+    url: jdbc:postgresql://fsa-honcharenko-psql.postgres.database.azure.com:5432/fsa-db?sslmode=require
+    username: fsaadmin@fsa-honcharenko-psql
+    password: P@ssword12345
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -82,7 +33,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8081/realms/Academia_project
+          issuer-uri: https://clg-posam.com/auth/realms/Academia_project
           jwk-set-uri: http://localhost:8081/realms/Academia_project/protocol/openid-connect/certs
 
 jdoodle:
@@ -97,3 +48,52 @@ logging:
 discussion:
   mail:
     from: "forum@example.com"
+
+
+#spring:
+#  mail:
+#    host: smtp.gmail.com
+#    port: 587
+#    username: tehniceskijuniversitet@gmail.com
+#    password: dnho wgqu tmet vntc
+#    properties.mail.smtp:
+#      auth: true
+#      starttls.enable: true
+#
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/PosAm
+#    username: postgres
+#    password: 380631159244Kolya
+#    driver-class-name: org.postgresql.Driver
+#
+#  jpa:
+#    database-platform: org.hibernate.dialect.PostgreSQLDialect
+#    show-sql: true
+#    generate-ddl: true
+#    hibernate:
+#      ddl-auto: update
+#    mapping-resources:
+#      - persistence/discussion-orm.xml
+#
+#  profiles:
+#    active: keycloak
+#
+#  security:
+#    oauth2:
+#      resourceserver:
+#        jwt:
+#          issuer-uri: http://localhost:8081/realms/Academia_project
+#          jwk-set-uri: http://localhost:8081/realms/Academia_project/protocol/openid-connect/certs
+#
+#jdoodle:
+#  api-url: https://api.jdoodle.com/v1/execute
+#  client-id: f5a875bea9d3261f9594ea8552e792cc
+#  client-secret: 5f496f47f4d98f0451f7d3eec7311b8eaa24c5d35bb3face94eb40fc8e0e7958
+#
+#logging:
+#  level:
+#    org.hibernate.SQL: DEBUG
+#    org.hibernate.type.descriptor.sql: TRACE
+#discussion:
+#  mail:
+#    from: "forum@example.com"
