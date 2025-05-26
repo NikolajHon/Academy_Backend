@@ -2,11 +2,13 @@ package sk.posam.fsa.discussion.service;
 
 import sk.posam.fsa.discussion.Lesson;
 import sk.posam.fsa.discussion.Question;
+import sk.posam.fsa.discussion.CourseProgressId;
+import sk.posam.fsa.discussion.exceptions.EducationAppException;
+import sk.posam.fsa.discussion.exceptions.ResourceNotFoundException;
 import sk.posam.fsa.discussion.repository.LessonRepository;
 import sk.posam.fsa.discussion.repository.QuestionRepository;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 public class QuestionService implements QuestionFacade {
     private final QuestionRepository questionRepo;
@@ -21,23 +23,33 @@ public class QuestionService implements QuestionFacade {
     @Override
     public Question createQuestion(Long lessonId, Question question) {
         Lesson lesson = lessonRepo.findById(lessonId)
-                .orElseThrow(() -> new NoSuchElementException("Lesson not found: " + lessonId));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Lesson with id=" + lessonId + " not found"
+                ));
         question.setLesson(lesson);
-
         question.getOptions().forEach(opt -> opt.setQuestion(question));
-
-        return questionRepo.create(question);
+        try {
+            return questionRepo.create(question);
+        } catch (RuntimeException | Error e) {
+            throw new EducationAppException("Failed to create question for lessonId=" + lessonId, e);
+        }
     }
 
     @Override
     public List<Question> getQuestionsByLesson(Long lessonId, int page, int size) {
-        return questionRepo.findByLesson(lessonId, page, size);
+        try {
+            return questionRepo.findByLesson(lessonId, page, size);
+        } catch (RuntimeException | Error e) {
+            throw new EducationAppException("Failed to load questions for lessonId=" + lessonId, e);
+        }
     }
 
     @Override
     public Question getQuestion(Long questionId) {
         return questionRepo.findById(questionId)
-                .orElseThrow(() -> new NoSuchElementException("Question not found: " + questionId));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Question with id=" + questionId + " not found"
+                ));
     }
 
     @Override
@@ -47,12 +59,20 @@ public class QuestionService implements QuestionFacade {
         existing.setType(question.getType());
         existing.setOptions(question.getOptions());
         existing.getOptions().forEach(o -> o.setQuestion(existing));
-        return questionRepo.update(existing);
+        try {
+            return questionRepo.update(existing);
+        } catch (RuntimeException | Error e) {
+            throw new EducationAppException("Failed to update question id=" + questionId, e);
+        }
     }
 
     @Override
     public void deleteQuestion(Long questionId) {
         getQuestion(questionId);
-        questionRepo.delete(questionId);
+        try {
+            questionRepo.delete(questionId);
+        } catch (RuntimeException | Error e) {
+            throw new EducationAppException("Failed to delete question id=" + questionId, e);
+        }
     }
 }

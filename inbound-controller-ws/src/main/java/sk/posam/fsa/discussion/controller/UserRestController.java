@@ -74,10 +74,20 @@ public class UserRestController implements UsersApi {
                         new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
                 );
         userFacade.get(userId);
-        Integer rating = courseProgressFacade.getCourseRating(courseId, userId);
-        RatingDto dto = new RatingDto().rating(rating);
+
+        CourseProgressId progressId = new CourseProgressId(courseId, userId);
+        CourseProgress progress = courseProgressFacade.findById(progressId)
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                String.format("Rating for course %d and user %d not found", courseId, userId)
+                        )
+                );
+
+        RatingDto dto = new RatingDto().rating(progress.getRating());
         return ResponseEntity.ok(dto);
     }
+
 
     @Override
     public ResponseEntity<List<CourseProgressWithUserDto>> listCourseProgressByCourseWithUser(Long courseId) {
