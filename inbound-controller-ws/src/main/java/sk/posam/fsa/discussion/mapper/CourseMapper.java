@@ -13,7 +13,6 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface CourseMapper {
 
-    @Mapping(target = "courseId", source = "course.id")  // <<< ОБЯЗАТЕЛЬНО
     LessonDto toDto(Lesson lesson);
 
     List<LessonDto> toDto(List<Lesson> lessons);

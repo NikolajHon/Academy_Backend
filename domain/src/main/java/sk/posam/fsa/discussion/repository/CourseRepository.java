@@ -2,6 +2,7 @@ package sk.posam.fsa.discussion.repository;
 
 
 import sk.posam.fsa.discussion.Course;
+import sk.posam.fsa.discussion.Lesson;
 
 import java.util.List;
 

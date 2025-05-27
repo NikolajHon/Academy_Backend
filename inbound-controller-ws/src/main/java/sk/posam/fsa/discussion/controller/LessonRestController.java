@@ -63,17 +63,6 @@ public class LessonRestController implements LessonsApi {
     }
 
 
-
-    @Override
-    public ResponseEntity<Void> createLesson(CreateLessonRequestDto dto) {
-        Lesson lesson = lessonMapper.toDomain(dto);
-        Course course = new Course();
-        course.setId(dto.getCourseId());
-        lesson.setCourse(course);
-        lessonFacade.createLesson(lesson);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
-
     @Override
     public ResponseEntity<QuestionDto> createQuestion(Long lessonId,
                                                       CreateQuestionRequestDto dto) {

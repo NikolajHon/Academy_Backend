@@ -1,10 +1,12 @@
 package sk.posam.fsa.discussion.service;
 
 import sk.posam.fsa.discussion.Course;
+import sk.posam.fsa.discussion.Lesson;
 import sk.posam.fsa.discussion.exceptions.EducationAppException;
 import sk.posam.fsa.discussion.exceptions.ResourceAlreadyExistsException;
 import sk.posam.fsa.discussion.exceptions.ResourceNotFoundException;
 import sk.posam.fsa.discussion.repository.CourseRepository;
+import sk.posam.fsa.discussion.repository.LessonRepository;
 
 import java.util.Collection;
 
@@ -30,7 +32,15 @@ public class CourseService implements CourseFacade {
     public Collection<Course> readAll() {
         return courseRepository.findAll();
     }
-
+    @Override
+    public void addLesson(Long courseId, Lesson lesson) {
+        Course course = courseRepository.getCourse(courseId);
+        if (course == null) {
+            throw new ResourceNotFoundException("Course with id=" + courseId + " not found");
+        }
+        course.getLessons().add(lesson);
+        courseRepository.create(course);
+    }
     @Override
     public void create(Course course) {
         if (course.getId() != null && courseRepository.getCourse(course.getId()) != null) {

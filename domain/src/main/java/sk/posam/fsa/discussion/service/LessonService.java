@@ -28,15 +28,7 @@ public class LessonService implements LessonFacade {
 
     @Override
     public void createLesson(Lesson lesson) {
-        Course course = courseRepository.findAll().stream()
-                .filter(c -> c.getId().equals(lesson.getCourse().getId()))
-                .findFirst()
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Course with id=" + lesson.getCourse().getId() + " not found"
-                ));
 
-        lesson.setCourse(course);
-        course.getLessons().add(lesson);
 
         try {
             lessonRepository.save(lesson);

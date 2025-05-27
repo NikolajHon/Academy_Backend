@@ -20,13 +20,14 @@ import java.util.UUID;
 @RestController
 public class CourseRestController implements CoursesApi {
 
-    private final CourseFacade               courseFacade;
-    private final ForumFacade                forumFacade;
-    private final CourseMapper               courseMapper;
-    private final LessonMapper               lessonMapper;
-    private final TopicMapper                topicMapper;
+    private final CourseFacade courseFacade;
+    private final ForumFacade forumFacade;
+    private final CourseMapper courseMapper;
+    private final LessonMapper lessonMapper;
+    private final TopicMapper topicMapper;
     private final CourseProgressFacade progressFacade;
-    private final UserFacade               userFacade;
+    private final UserFacade userFacade;
+
     public CourseRestController(
             CourseFacade courseFacade,
             ForumFacade forumFacade,
@@ -35,12 +36,12 @@ public class CourseRestController implements CoursesApi {
             TopicMapper topicMapper,
             CourseProgressFacade progressFacade, UserFacade userFacade
     ) {
-        this.courseFacade             = courseFacade;
-        this.forumFacade              = forumFacade;
-        this.courseMapper             = courseMapper;
-        this.lessonMapper             = lessonMapper;
-        this.topicMapper              = topicMapper;
-        this.progressFacade           = progressFacade;
+        this.courseFacade = courseFacade;
+        this.forumFacade = forumFacade;
+        this.courseMapper = courseMapper;
+        this.lessonMapper = lessonMapper;
+        this.topicMapper = topicMapper;
+        this.progressFacade = progressFacade;
         this.userFacade = userFacade;
     }
 
@@ -69,10 +70,10 @@ public class CourseRestController implements CoursesApi {
             Long lessonId
     ) {
         Long userId = userFacade.getByKeycloakId(keycloakId)
-            .map(u -> u.getId())
-            .orElseThrow(() ->
-                    new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
-            );
+                .map(u -> u.getId())
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
+                );
 
         try {
             progressFacade.addLessonProgress(courseId, userId, lessonId);
@@ -118,9 +119,18 @@ public class CourseRestController implements CoursesApi {
     }
 
     @Override
+    public ResponseEntity<Void> createLesson(CreateLessonRequestDto dto) {
+        Lesson lesson = lessonMapper.toDomain(dto);
+
+        courseFacade.addLesson(dto.getCourseId(), lesson);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @Override
     public ResponseEntity<CoursesResponseDto> getAllCourses() {
         Collection<Course> courses = courseFacade.readAll();
-        List<CourseDto>    dtos    = courseMapper.toDto(courses);
+        List<CourseDto> dtos = courseMapper.toDto(courses);
 
         CoursesResponseDto resp = new CoursesResponseDto();
         resp.setCourses(dtos);
@@ -159,7 +169,7 @@ public class CourseRestController implements CoursesApi {
                                                                Integer page,
                                                                Integer size) {
 
-        int p = (page == null || page < 0) ? 0  : page;
+        int p = (page == null || page < 0) ? 0 : page;
         int s = (size == null || size <= 0) ? 20 : size;
 
         Collection<Topic> topics = forumFacade.getTopics(courseId, p, s);

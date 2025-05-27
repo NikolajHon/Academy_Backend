@@ -155,18 +155,13 @@
             <basic name="content">
                 <column name="content" length="1000"/>
             </basic>
-            <many-to-one name="course" fetch="EAGER">
-                <join-column name="course_id" nullable="false"/>
-            </many-to-one>
+            <!-- Убираем <many-to-one name="course"…> полностью -->
             <one-to-many name="assignments" mapped-by="lesson" fetch="LAZY" orphan-removal="true">
                 <cascade>
                     <cascade-all/>
                 </cascade>
             </one-to-many>
-            <one-to-many name="videoMaterials"
-                         mapped-by="lesson"
-                         fetch="LAZY"
-                         orphan-removal="true">
+            <one-to-many name="videoMaterials" mapped-by="lesson" fetch="LAZY" orphan-removal="true">
                 <cascade>
                     <cascade-all/>
                 </cascade>
@@ -209,11 +204,18 @@
                 <column name="description" length="1000"/>
             </basic>
 
+            <!-- unidirectional OneToMany: теперь с cascade-all -->
+            <one-to-many name="lessons" fetch="EAGER" orphan-removal="true">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+                <join-column name="course_id" referenced-column-name="id"/>
+            </one-to-many>
 
-            <one-to-many name="lessons" mapped-by="course" fetch="EAGER"/>
             <many-to-many name="users" mapped-by="courses"/>
         </attributes>
     </entity>
+
 
     <embeddable class="sk.posam.fsa.discussion.CourseProgressId">
         <attributes>

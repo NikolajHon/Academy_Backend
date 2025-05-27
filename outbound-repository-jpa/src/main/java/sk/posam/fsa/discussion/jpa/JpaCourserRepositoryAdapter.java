@@ -3,7 +3,6 @@ package sk.posam.fsa.discussion.jpa;
 import org.springframework.stereotype.Repository;
 import sk.posam.fsa.discussion.Course;
 import sk.posam.fsa.discussion.repository.CourseRepository;
-
 import java.util.List;
 
 @Repository
@@ -27,6 +26,7 @@ public class JpaCourserRepositoryAdapter implements CourseRepository {
 
     @Override
     public Course getCourse(Long courseId) {
+        // getReferenceById вернёт прокси, не делая SELECT сразу
         return courseSpringDataRepository.getReferenceById(courseId);
     }
 }

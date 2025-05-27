@@ -7,7 +7,6 @@ public class Lesson {
     private Long id;
     private String title;
     private String content;
-    private Course course;
     private List<Assignment> assignments = new ArrayList<>();
     private List<VideoMaterial> videoMaterials = new ArrayList<>();
 
@@ -30,9 +29,6 @@ public class Lesson {
 
     public void setContent(String content) { this.content = content; }
 
-    public Course getCourse() { return course; }
-
-    public void setCourse(Course course) { this.course = course; }
 
     public List<Assignment> getAssignments() {
         return assignments;

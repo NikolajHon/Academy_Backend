@@ -11,12 +11,12 @@ paths:
       summary: Set user rating on a course
       operationId: setUserCourseRating
       parameters:
-        - name: keycloakId          # было userId
+        - name: keycloakId
           in: path
           required: true
           description: Keycloak subject (sub)
           schema:
-            type: string            # был integer(int64)
+            type: string
         - name: courseId
           in: path
           required: true
@@ -702,7 +702,7 @@ paths:
         '404':
           description: Course not found
 
-  /lessons:
+  /courses/lessons:
     post:
       summary: Create new lesson
       operationId: createLesson
