@@ -1407,7 +1407,7 @@ components:
           type: string
         templateCode:
           type: string
-        expectedOutput:
+        language:
           type: string
         outputType:
           $ref: '#/components/schemas/AssignmentOutputType'

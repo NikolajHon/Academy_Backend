@@ -8,7 +8,7 @@ public class Assignment {
     private String description;
     private String templateCode;
     private String teacherCode;
-    private String expectedOutput;
+    private String language;
     private AssignmentOutputType outputType;
     private List<TestCase> testCases = new ArrayList<>();
 
@@ -21,12 +21,12 @@ public class Assignment {
         this.description = description;
     }
 
-    public String getExpectedOutput() {
-        return expectedOutput;
+    public String getLanguage() {
+        return language;
     }
 
-    public void setExpectedOutput(String expectedOutput) {
-        this.expectedOutput = expectedOutput;
+    public void setLanguage(String language) {
+        this.language = language;
     }
 
     public Long getId() {

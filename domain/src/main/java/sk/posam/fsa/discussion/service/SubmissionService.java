@@ -37,7 +37,7 @@ public class SubmissionService implements SubmissionFacade {
             try {
                 String merged = mergeSource(assignment.getTeacherCode(), studentCode, tc);
                 CodeExecutionResult exec = executor.execute(
-                        new CodeExecutionRequest(merged, "c", "4")
+                        new CodeExecutionRequest(merged, assignment.getLanguage().toLowerCase(), "4")
                 );
                 boolean passed = exec.stdout().trim()
                         .equals(tc.getExpectedOutput().trim());
