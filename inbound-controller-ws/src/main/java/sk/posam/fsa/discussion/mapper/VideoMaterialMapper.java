@@ -10,8 +10,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface VideoMaterialMapper {
-    VideoMaterial toDomain(CreateVideoMaterialRequestDto dto);
-    @Mapping(target = "lessonId", source = "lesson.id")
+    VideoMaterial fromDto(CreateVideoMaterialRequestDto dto);
     VideoMaterialDto toDto(VideoMaterial vm);
     List<VideoMaterialDto> toDto(List<VideoMaterial> vms);
 }
