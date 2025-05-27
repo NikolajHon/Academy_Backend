@@ -1102,12 +1102,15 @@ components:
         questionId:
           type: integer
           description: Question ID
-        selectedOptionId:
-          type: integer
-          description: Identifier of the selected option
+        selectedOptionIds:
+          type: array
+          description: List of identifiers of the selected options
+          items:
+            type: integer
       required:
         - questionId
-        - selectedOptionId
+        - selectedOptionIds
+
 
     CheckAnswersResponse:
       type: object

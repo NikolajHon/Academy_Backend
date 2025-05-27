@@ -6,7 +6,9 @@ import sk.posam.fsa.discussion.exceptions.ResourceNotFoundException;
 import sk.posam.fsa.discussion.repository.LessonRepository;
 import sk.posam.fsa.discussion.repository.QuestionRepository;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class QuestionService implements QuestionFacade {
@@ -82,14 +84,32 @@ public class QuestionService implements QuestionFacade {
                             .orElseThrow(() ->
                                     new ResourceNotFoundException("Question", ua.getQuestionId())
                             );
-                    boolean correct = question.getOptions().stream()
-                            .anyMatch(opt ->
-                                    opt.getId().equals(ua.getSelectedOptionId())
-                                            && Boolean.TRUE.equals(opt.isCorrect())
-                            );
+
+                    boolean correct;
+                    if (question.getType() == QuestionType.MULTIPLE_CHOICE) {
+                        Set<Long> correctOptionIds = question.getOptions().stream()
+                                .filter(AnswerOption::isCorrect)
+                                .map(AnswerOption::getId)
+                                .collect(Collectors.toSet());
+
+                        Set<Long> selectedIds = new HashSet<>(ua.getSelectedOptionIds());
+
+                        // Правильно только если множества совпадают
+                        correct = selectedIds.equals(correctOptionIds);
+                    } else {
+                        // Одиночный выбор: достаточно найти одну правильную совпадающую опцию
+                        correct = question.getOptions().stream()
+                                .anyMatch(opt ->
+                                        ua.getSelectedOptionIds().size() == 1 &&
+                                                opt.getId().equals(ua.getSelectedOptionIds().get(0)) &&
+                                                Boolean.TRUE.equals(opt.isCorrect())
+                                );
+                    }
+
                     return new AnswerResult(question.getId(), correct);
                 })
                 .collect(Collectors.toList());
     }
+
 
 }

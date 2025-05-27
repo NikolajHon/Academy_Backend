@@ -1,27 +1,21 @@
 package sk.posam.fsa.discussion;
 
+import java.util.List;
+
 public class UserAnswer {
     private Long questionId;
-    private Long selectedOptionId;
+    private List<Long> selectedOptionIds;
 
-    public UserAnswer() { }
-
-    public UserAnswer(Long questionId, Long selectedOptionId) {
+    public UserAnswer(Long questionId, List<Long> selectedOptionIds) {
         this.questionId = questionId;
-        this.selectedOptionId = selectedOptionId;
+        this.selectedOptionIds = selectedOptionIds;
     }
 
     public Long getQuestionId() {
         return questionId;
     }
-    public void setQuestionId(Long questionId) {
-        this.questionId = questionId;
-    }
 
-    public Long getSelectedOptionId() {
-        return selectedOptionId;
-    }
-    public void setSelectedOptionId(Long selectedOptionId) {
-        this.selectedOptionId = selectedOptionId;
+    public List<Long> getSelectedOptionIds() {
+        return selectedOptionIds;
     }
 }

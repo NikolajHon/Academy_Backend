@@ -56,11 +56,12 @@ public class QuestionRestController implements QuestionsApi {
     @Override
     public ResponseEntity<CheckAnswersResponseDto> questionsAnswersCheckPost(
             CheckAnswersRequestDto request) {
-
         List<UserAnswer> domainAnswers = request.getAnswers().stream()
                 .map(dto -> new UserAnswer(
                         dto.getQuestionId().longValue(),
-                        dto.getSelectedOptionId().longValue()
+                        dto.getSelectedOptionIds().stream()
+                                .map(Integer::longValue)
+                                .collect(Collectors.toList())
                 ))
                 .collect(Collectors.toList());
 
@@ -69,7 +70,7 @@ public class QuestionRestController implements QuestionsApi {
         List<AnswerResultDto> resultDtos = domainResults.stream()
                 .map(r -> {
                     AnswerResultDto dto = new AnswerResultDto();
-                    dto.setQuestionId((int)(long)r.getQuestionId());
+                    dto.setQuestionId(r.getQuestionId().intValue());
                     dto.setCorrect(r.isCorrect());
                     return dto;
                 })
@@ -79,4 +80,5 @@ public class QuestionRestController implements QuestionsApi {
         resp.setResults(resultDtos);
         return ResponseEntity.ok(resp);
     }
+
 }
