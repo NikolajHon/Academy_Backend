@@ -10,16 +10,8 @@ public class Assignment {
     private String teacherCode;
     private String expectedOutput;
     private AssignmentOutputType outputType;
-    private Lesson lesson;
     private List<TestCase> testCases = new ArrayList<>();
 
-    public Lesson getLesson() {
-        return lesson;
-    }
-
-    public void setLesson(Lesson lesson) {
-        this.lesson = lesson;
-    }
 
     public String getDescription() {
         return description;

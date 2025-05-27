@@ -25,56 +25,31 @@ public class LessonService implements LessonFacade {
         this.courseRepository      = courseRepository;
         this.assignmentRepository  = assignmentRepository;
     }
-
-    @Override
-    public void createLesson(Lesson lesson) {
-
-
-        try {
-            lessonRepository.save(lesson);
-        } catch (RuntimeException | Error e) {
-            throw new EducationAppException("Failed to create lesson", e);
-        }
-    }
-
-    @Override
+@Override
     public Assignment createAssignment(Long lessonId, Assignment assignment) {
+        // 1) Найти урок по его ID или выбросить ошибку, если не найден
         Lesson lesson = lessonRepository.findById(lessonId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Lesson with id=" + lessonId + " not found"
                 ));
 
-        if (assignment.getId() != null
-                && assignmentRepository.findById(assignment.getId()).isPresent()) {
-            throw new ResourceAlreadyExistsException(
-                    "Assignment with id=" + assignment.getId() + " already exists"
-            );
-        }
+        // 2) Добавить новое задание в коллекцию урока
+        lesson.getAssignments().add(assignment);
 
-        assignment.setLesson(lesson);
-        if (assignment.getTestCases() != null) {
-            assignment.getTestCases().forEach(tc -> tc.setAssignment(assignment));
-        }
+        // 3) Сохранить урок — благодаря cascade ALL Hibernate автоматически вставит
+        //    запись в таблицу assignment и заполнит lesson_id
+        lessonRepository.save(lesson);
 
-        try {
-            return assignmentRepository.create(assignment);
-        } catch (ResourceAlreadyExistsException raee) {
-            throw raee;
-        } catch (RuntimeException | Error e) {
-            throw new EducationAppException(
-                    "Failed to create assignment for lessonId=" + lessonId, e
-            );
-        }
+        // 4) Вернуть только что сохранённый объект Assignment (его ID уже проставлен)
+        return assignment;
     }
 
     @Override
-    public List<Assignment> getAssignmentsByLesson(Long lessonId) {
-        try {
-            return assignmentRepository.getAssignmentsByCourse(lessonId);
-        } catch (RuntimeException | Error e) {
-            throw new EducationAppException(
-                    "Failed to load assignments for lessonId=" + lessonId, e
-            );
-        }
+    public List<Assignment> getAssignments(Long lessonId) {
+        Lesson lesson = lessonRepository.findById(lessonId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Lesson with id=" + lessonId + " not found")
+                );
+        return lesson.getAssignments();
     }
 }

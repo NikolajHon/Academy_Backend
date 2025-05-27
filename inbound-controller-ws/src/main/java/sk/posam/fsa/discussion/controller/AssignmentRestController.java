@@ -80,7 +80,7 @@ public class AssignmentRestController implements AssignmentsApi {
 
     @Override
     public ResponseEntity<List<TestCaseDto>> getTestCasesByAssignment(Long assignmentId) {
-        List<TestCase> cases = testCaseFacade.getByAssignment(assignmentId);
+        List<TestCase> cases = assignmentFacade.getTestCases(assignmentId);
         List<TestCaseDto> dtos = cases.stream()
                 .map(testCaseMapper::toDto)
                 .collect(Collectors.toList());

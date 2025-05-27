@@ -88,7 +88,7 @@
     </entity>
 
     <!-- Assignment -->
-    <entity class="Assignment" access="PROPERTY">
+    <entity class="sk.posam.fsa.discussion.Assignment" access="PROPERTY">
         <table name="assignment"/>
         <attributes>
             <id name="id">
@@ -110,19 +110,21 @@
             <basic name="outputType">
                 <column name="output_type" nullable="false"/>
             </basic>
-            <many-to-one name="lesson" fetch="LAZY">
-                <join-column name="lesson_id" nullable="false"/>
-            </many-to-one>
-            <one-to-many name="testCases" mapped-by="assignment" fetch="LAZY" orphan-removal="true">
+
+            <one-to-many name="testCases"
+                         fetch="LAZY"
+                         orphan-removal="true">
                 <cascade>
                     <cascade-all/>
                 </cascade>
+                <!-- тут указываем, в каком столбце в test_case хранится внешний ключ -->
+                <join-column name="assignment_id" referenced-column-name="id"/>
             </one-to-many>
         </attributes>
     </entity>
 
     <!-- TestCase -->
-    <entity class="TestCase" access="PROPERTY">
+    <entity class="sk.posam.fsa.discussion.TestCase" access="PROPERTY">
         <table name="test_case"/>
         <attributes>
             <id name="id">
@@ -135,14 +137,11 @@
             <basic name="expectedOutput">
                 <column name="expected_output" nullable="false" length="2000"/>
             </basic>
-            <many-to-one name="assignment" fetch="LAZY">
-                <join-column name="assignment_id" nullable="false"/>
-            </many-to-one>
+            <!-- весь блок many-to-one удалён -->
         </attributes>
     </entity>
-
     <!-- Lesson -->
-    <entity class="Lesson" access="PROPERTY">
+    <entity class="sk.posam.fsa.discussion.Lesson" access="PROPERTY">
         <table name="lesson"/>
         <attributes>
             <id name="id">
@@ -155,19 +154,23 @@
             <basic name="content">
                 <column name="content" length="1000"/>
             </basic>
-            <!-- Убираем <many-to-one name="course"…> полностью -->
-            <one-to-many name="assignments" mapped-by="lesson" fetch="LAZY" orphan-removal="true">
-                <cascade>
-                    <cascade-all/>
-                </cascade>
+
+            <one-to-many name="assignments" fetch="LAZY" orphan-removal="true">
+                <cascade><cascade-all/></cascade>
+                <join-column name="lesson_id" referenced-column-name="id"/>
             </one-to-many>
-            <one-to-many name="videoMaterials" mapped-by="lesson" fetch="LAZY" orphan-removal="true">
+
+
+            <!-- Аналогично для VideoMaterial, если вы тоже убрали его many-to-one -->
+            <one-to-many name="videoMaterials" fetch="LAZY" orphan-removal="true">
                 <cascade>
                     <cascade-all/>
                 </cascade>
+                <join-column name="lesson_id" referenced-column-name="id"/>
             </one-to-many>
         </attributes>
     </entity>
+
 
     <!-- VideoMaterial -->
     <entity class="VideoMaterial" access="PROPERTY">

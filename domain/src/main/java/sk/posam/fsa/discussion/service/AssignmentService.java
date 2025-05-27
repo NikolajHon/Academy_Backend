@@ -1,6 +1,7 @@
 package sk.posam.fsa.discussion.service;
 
 import sk.posam.fsa.discussion.Assignment;
+import sk.posam.fsa.discussion.TestCase;
 import sk.posam.fsa.discussion.exceptions.EducationAppException;
 import sk.posam.fsa.discussion.exceptions.ResourceAlreadyExistsException;
 import sk.posam.fsa.discussion.exceptions.ResourceNotFoundException;
@@ -39,11 +40,6 @@ public class AssignmentService implements AssignmentFacade {
     }
 
     @Override
-    public List<Assignment> getAssignmentsByCourse(Long courseId) {
-        return repo.getAssignmentsByCourse(courseId);
-    }
-
-    @Override
     public Assignment update(Long id, Assignment assignment) {
         if (repo.findById(id).isEmpty()) {
             throw new ResourceNotFoundException(
@@ -69,6 +65,18 @@ public class AssignmentService implements AssignmentFacade {
             repo.deleteById(id);
         } catch (RuntimeException | Error e) {
             throw new EducationAppException("Failed to delete assignment", e);
+        }
+    }
+    @Override
+    public List<TestCase> getTestCases(Long assignmentId) {
+        try {
+            return repo.getTestCases(assignmentId);
+        } catch (ResourceNotFoundException rnfe) {
+            throw rnfe;
+        } catch (RuntimeException | Error e) {
+            throw new EducationAppException(
+                    "Failed to load test cases for assignmentId=" + assignmentId, e
+            );
         }
     }
 }

@@ -31,9 +31,9 @@ public class LessonRestController implements LessonsApi {
     public LessonRestController(LessonFacade lessonFacade,
                                 LessonMapper lessonMapper,
                                 AssignmentMapper assignmentMapper, QuestionMapper questionMapper, QuestionFacade questionFacade) {
-        this.lessonFacade       = lessonFacade;
-        this.lessonMapper       = lessonMapper;
-        this.assignmentMapper   = assignmentMapper;
+        this.lessonFacade = lessonFacade;
+        this.lessonMapper = lessonMapper;
+        this.assignmentMapper = assignmentMapper;
         this.questionMapper = questionMapper;
         this.questionFacade = questionFacade;
     }
@@ -41,10 +41,12 @@ public class LessonRestController implements LessonsApi {
     @Override
     public ResponseEntity<AssignmentDto> createAssignment(
             Long lessonId,
-            CreateAssignmentRequestDto createDto) {
-
+            CreateAssignmentRequestDto createDto
+    ) {
         Assignment domain = assignmentMapper.toDomain(createDto);
+
         Assignment saved = lessonFacade.createAssignment(lessonId, domain);
+
         AssignmentDto dto = assignmentMapper.toDto(saved);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -55,7 +57,7 @@ public class LessonRestController implements LessonsApi {
     public ResponseEntity<List<AssignmentDto>> getAssignmentsByLesson(
             Long lessonId) {
 
-        List<Assignment> list = lessonFacade.getAssignmentsByLesson(lessonId);
+        List<Assignment> list = lessonFacade.getAssignments(lessonId);
         List<AssignmentDto> dtoList = list.stream()
                 .map(assignmentMapper::toDto)
                 .collect(Collectors.toList());

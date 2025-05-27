@@ -26,10 +26,6 @@ public class JpaTestCaseRepositoryAdapter implements TestCaseRepository {
         return repo.findById(id);
     }
 
-    @Override
-    public List<TestCase> findByAssignmentId(Long assignmentId) {
-        return repo.findAllByAssignment_Id(assignmentId);
-    }
 
     @Override
     public void delete(TestCase testCase) {

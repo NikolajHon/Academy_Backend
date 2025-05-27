@@ -4,7 +4,6 @@ public class TestCase {
     private Long id;
     private String input;
     private String expectedOutput;
-    private Assignment assignment;
 
     public Long getId() {
         return id;
@@ -27,10 +26,4 @@ public class TestCase {
         this.expectedOutput = expectedOutput;
     }
 
-    public Assignment getAssignment() {
-        return assignment;
-    }
-    public void setAssignment(Assignment assignment) {
-        this.assignment = assignment;
-    }
 }

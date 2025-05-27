@@ -36,4 +36,5 @@ public class JpaLessonRepositoryAdapter implements LessonRepository {
         return springDataRepository.getReferenceById(id);
     }
 
+
 }

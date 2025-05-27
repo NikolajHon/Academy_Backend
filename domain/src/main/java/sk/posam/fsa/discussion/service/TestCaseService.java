@@ -26,7 +26,6 @@ public class TestCaseService implements TestCaseFacade {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Assignment with id=" + assignmentId + " not found"
                 ));
-        testCase.setAssignment(a);
         try {
             return testCaseRepo.create(testCase);
         } catch (RuntimeException | Error e) {
@@ -36,16 +35,6 @@ public class TestCaseService implements TestCaseFacade {
         }
     }
 
-    @Override
-    public List<TestCase> getByAssignment(Long assignmentId) {
-        try {
-            return testCaseRepo.findByAssignmentId(assignmentId);
-        } catch (RuntimeException | Error e) {
-            throw new EducationAppException(
-                    "Failed to load test cases for assignmentId=" + assignmentId, e
-            );
-        }
-    }
 
     @Override
     public void delete(Long assignmentId, Long testCaseId) {
@@ -53,11 +42,6 @@ public class TestCaseService implements TestCaseFacade {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "TestCase with id=" + testCaseId + " not found"
                 ));
-        if (!tc.getAssignment().getId().equals(assignmentId)) {
-            throw new ResourceNotFoundException(
-                    "TestCase id=" + testCaseId + " does not belong to assignment id=" + assignmentId
-            );
-        }
         try {
             testCaseRepo.delete(tc);
         } catch (RuntimeException | Error e) {

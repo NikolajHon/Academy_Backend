@@ -5,5 +5,4 @@ import sk.posam.fsa.discussion.TestCase;
 import java.util.List;
 
 public interface TestCaseSpringDataRepository extends JpaRepository<TestCase, Long> {
-    List<TestCase> findAllByAssignment_Id(Long assignmentId);
 }
