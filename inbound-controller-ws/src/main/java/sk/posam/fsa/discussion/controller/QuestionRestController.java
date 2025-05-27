@@ -2,18 +2,21 @@ package sk.posam.fsa.discussion.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import sk.posam.fsa.discussion.AnswerResult;
 import sk.posam.fsa.discussion.Question;
+import sk.posam.fsa.discussion.UserAnswer;
 import sk.posam.fsa.discussion.mapper.QuestionMapper;
 import sk.posam.fsa.discussion.rest.api.QuestionsApi;
-import sk.posam.fsa.discussion.rest.dto.CreateQuestionRequestDto;
-import sk.posam.fsa.discussion.rest.dto.QuestionDto;
-import sk.posam.fsa.discussion.rest.dto.UpdateQuestionRequestDto;
-import sk.posam.fsa.discussion.rest.dto.UserDto;
+import sk.posam.fsa.discussion.rest.dto.*;
 import sk.posam.fsa.discussion.security.CurrentUserDetailService;
 import sk.posam.fsa.discussion.service.QuestionFacade;
 import sk.posam.fsa.discussion.service.QuestionService;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class QuestionRestController implements QuestionsApi {
@@ -38,6 +41,7 @@ public class QuestionRestController implements QuestionsApi {
         return ResponseEntity.ok(questionMapper.toDto(q));
     }
 
+
     @Override
     public ResponseEntity<QuestionDto> updateQuestion(
             Long questionId,
@@ -46,5 +50,33 @@ public class QuestionRestController implements QuestionsApi {
         Question domain = questionMapper.toDomain(dto);
         Question updated = questionFacade.updateQuestion(questionId, domain);
         return ResponseEntity.ok(questionMapper.toDto(updated));
+    }
+
+
+    @Override
+    public ResponseEntity<CheckAnswersResponseDto> questionsAnswersCheckPost(
+            CheckAnswersRequestDto request) {
+
+        List<UserAnswer> domainAnswers = request.getAnswers().stream()
+                .map(dto -> new UserAnswer(
+                        dto.getQuestionId().longValue(),
+                        dto.getSelectedOptionId().longValue()
+                ))
+                .collect(Collectors.toList());
+
+        List<AnswerResult> domainResults = questionFacade.checkAnswers(domainAnswers);
+
+        List<AnswerResultDto> resultDtos = domainResults.stream()
+                .map(r -> {
+                    AnswerResultDto dto = new AnswerResultDto();
+                    dto.setQuestionId((int)(long)r.getQuestionId());
+                    dto.setCorrect(r.isCorrect());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+        CheckAnswersResponseDto resp = new CheckAnswersResponseDto();
+        resp.setResults(resultDtos);
+        return ResponseEntity.ok(resp);
     }
 }

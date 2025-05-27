@@ -64,10 +64,36 @@ public class LessonRestController implements LessonsApi {
         return ResponseEntity.ok(dtoList);
     }
 
+    @Override
+    public ResponseEntity<QuestionsPublicResponseDto> getQuestionsByLesson(
+            Long lessonId,
+            Integer page,
+            Integer size
+    ) {
+        List<Question> list = questionFacade.getQuestionsByLesson(lessonId, page, size);
+
+        List<QuestionPublicDto> questionDtos = questionMapper.toPublicDto(list);
+
+        QuestionsPublicResponseDto resp = new QuestionsPublicResponseDto();
+        resp.setQuestions(questionDtos);
+        resp.setPage(page);
+        resp.setSize(size);
+        int total = questionDtos.size();
+        resp.setTotalElements(total);
+        resp.setTotalPages(size != null && size > 0
+                ? (int) Math.ceil((double) total / size)
+                : 1);
+
+        return ResponseEntity.ok(resp);
+    }
+
 
     @Override
     public ResponseEntity<QuestionDto> createQuestion(Long lessonId,
                                                       CreateQuestionRequestDto dto) {
+        String optionsDesc = dto.getOptions().stream()
+                .map(opt -> "{text=" + opt.getText() + ", correct=" + opt.getCorrect() + "}")
+                .collect(Collectors.joining(", "));
 
         Question domain = questionMapper.toDomain(dto);
         Question saved = questionFacade.createQuestion(lessonId, domain);
@@ -76,19 +102,7 @@ public class LessonRestController implements LessonsApi {
                 .body(questionMapper.toDto(saved));
     }
 
-    @Override
-    public ResponseEntity<QuestionsResponseDto> getQuestionsByLesson(
-            Long lessonId, Integer page, Integer size) {
 
-        List<Question> list = questionFacade.getQuestionsByLesson(
-                lessonId, page, size);
-
-        QuestionsResponseDto resp = new QuestionsResponseDto();
-        resp.setQuestions(questionMapper.toDto(list));
-        resp.setPage(page);
-        resp.setSize(size);
-        return ResponseEntity.ok(resp);
-    }
 
 
 }

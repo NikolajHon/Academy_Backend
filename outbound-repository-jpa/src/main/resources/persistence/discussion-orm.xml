@@ -334,9 +334,6 @@
     </entity>
 
 
-    <!-- =====================================================
-         Сущность AnswerOption — связана с Question
-         ===================================================== -->
     <entity class="AnswerOption" access="PROPERTY">
         <table name="answer_option"/>
         <attributes>

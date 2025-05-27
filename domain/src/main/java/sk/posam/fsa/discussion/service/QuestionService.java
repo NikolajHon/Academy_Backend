@@ -1,14 +1,13 @@
 package sk.posam.fsa.discussion.service;
 
-import sk.posam.fsa.discussion.Lesson;
-import sk.posam.fsa.discussion.Question;
-import sk.posam.fsa.discussion.CourseProgressId;
+import sk.posam.fsa.discussion.*;
 import sk.posam.fsa.discussion.exceptions.EducationAppException;
 import sk.posam.fsa.discussion.exceptions.ResourceNotFoundException;
 import sk.posam.fsa.discussion.repository.LessonRepository;
 import sk.posam.fsa.discussion.repository.QuestionRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class QuestionService implements QuestionFacade {
     private final QuestionRepository questionRepo;
@@ -75,4 +74,22 @@ public class QuestionService implements QuestionFacade {
             throw new EducationAppException("Failed to delete question id=" + questionId, e);
         }
     }
+    @Override
+    public List<AnswerResult> checkAnswers(List<UserAnswer> userAnswers) {
+        return userAnswers.stream()
+                .map(ua -> {
+                    Question question = questionRepo.findById(ua.getQuestionId())
+                            .orElseThrow(() ->
+                                    new ResourceNotFoundException("Question", ua.getQuestionId())
+                            );
+                    boolean correct = question.getOptions().stream()
+                            .anyMatch(opt ->
+                                    opt.getId().equals(ua.getSelectedOptionId())
+                                            && Boolean.TRUE.equals(opt.isCorrect())
+                            );
+                    return new AnswerResult(question.getId(), correct);
+                })
+                .collect(Collectors.toList());
+    }
+
 }
