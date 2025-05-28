@@ -7,7 +7,6 @@
             http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
         version="2.1">
 
-    <!-- пакет, по которому резолвятся относительные class-имена -->
     <package>sk.posam.fsa.discussion</package>
 
     <converter
@@ -95,6 +94,9 @@
                 <column name="id"/>
                 <generated-value strategy="IDENTITY"/>
             </id>
+            <basic name="title">
+                <column name="title" nullable="false" length="1000"/>
+            </basic>
             <basic name="description">
                 <column name="description" nullable="false" length="1000"/>
             </basic>
@@ -151,10 +153,11 @@
             </basic>
 
             <one-to-many name="assignments" fetch="LAZY" orphan-removal="true">
-                <cascade><cascade-all/></cascade>
+                <cascade>
+                    <cascade-all/>
+                </cascade>
                 <join-column name="lesson_id" referenced-column-name="id"/>
             </one-to-many>
-
 
             <one-to-many name="videoMaterials" fetch="LAZY" orphan-removal="true">
                 <cascade>
@@ -162,6 +165,7 @@
                 </cascade>
                 <join-column name="lesson_id" referenced-column-name="id"/>
             </one-to-many>
+
         </attributes>
     </entity>
 

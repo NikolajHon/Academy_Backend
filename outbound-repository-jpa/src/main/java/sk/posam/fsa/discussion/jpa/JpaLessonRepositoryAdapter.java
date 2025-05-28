@@ -36,5 +36,10 @@ public class JpaLessonRepositoryAdapter implements LessonRepository {
         return springDataRepository.getReferenceById(id);
     }
 
+    @Override
+    public void delete(Long lessonId) {
+        springDataRepository.deleteById(lessonId);
+    }
+
 
 }

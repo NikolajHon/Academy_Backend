@@ -23,16 +23,13 @@ import java.util.stream.Collectors;
 public class LessonRestController implements LessonsApi {
 
     private final LessonFacade lessonFacade;
-    private final LessonMapper lessonMapper;
     private final AssignmentMapper assignmentMapper;
     private final QuestionMapper questionMapper;
     private final QuestionFacade questionFacade;
 
     public LessonRestController(LessonFacade lessonFacade,
-                                LessonMapper lessonMapper,
                                 AssignmentMapper assignmentMapper, QuestionMapper questionMapper, QuestionFacade questionFacade) {
         this.lessonFacade = lessonFacade;
-        this.lessonMapper = lessonMapper;
         this.assignmentMapper = assignmentMapper;
         this.questionMapper = questionMapper;
         this.questionFacade = questionFacade;
@@ -43,15 +40,26 @@ public class LessonRestController implements LessonsApi {
             Long lessonId,
             CreateAssignmentRequestDto createDto
     ) {
-        Assignment domain = assignmentMapper.toDomain(createDto);
+        System.out.println("createAssignment called with lessonId = " + lessonId);
+        System.out.println("CreateAssignmentRequestDto:");
+        System.out.println("  description    = " + createDto.getDescription());
+        System.out.println("  teacherCode    = " + createDto.getTeacherCode());
+        System.out.println("  templateCode   = " + createDto.getTemplateCode());
+        System.out.println("  expectedOutput = " + createDto.getLanguage());
+        System.out.println("  outputType     = " + createDto.getOutputType());
+        System.out.println("  testCases      = " + createDto.getTestCases());
 
+        Assignment domain = assignmentMapper.toDomain(createDto);
         Assignment saved = lessonFacade.createAssignment(lessonId, domain);
 
         AssignmentDto dto = assignmentMapper.toDto(saved);
+        System.out.println("Returning AssignmentDto: " + dto);
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(dto);
     }
+
 
     @Override
     public ResponseEntity<List<AssignmentDto>> getAssignmentsByLesson(
@@ -102,6 +110,11 @@ public class LessonRestController implements LessonsApi {
                 .body(questionMapper.toDto(saved));
     }
 
+    @Override
+    public ResponseEntity<Void> deleteLesson(Long lessonId) {
+        lessonFacade.deleteLesson(lessonId);
+        return ResponseEntity.noContent().build();
+    }
 
 
 

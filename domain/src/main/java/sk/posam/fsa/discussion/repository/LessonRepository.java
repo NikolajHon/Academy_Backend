@@ -10,4 +10,5 @@ public interface LessonRepository {
     List<Lesson> findAll();
     Optional<Lesson> findById(Long id);
     Lesson get(long id);
+    void delete(Long lessonId);
 }

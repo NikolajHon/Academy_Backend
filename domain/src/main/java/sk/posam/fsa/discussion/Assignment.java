@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Assignment {
     private Long id;
+    private String title;
     private String description;
     private String templateCode;
     private String teacherCode;
@@ -12,6 +13,14 @@ public class Assignment {
     private AssignmentOutputType outputType;
     private List<TestCase> testCases = new ArrayList<>();
 
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public String getDescription() {
         return description;

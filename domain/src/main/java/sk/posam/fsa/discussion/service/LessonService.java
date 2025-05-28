@@ -16,17 +16,12 @@ import java.util.List;
 public class LessonService implements LessonFacade {
 
     private final LessonRepository lessonRepository;
-    private final CourseRepository courseRepository;
-    private final AssignmentRepository assignmentRepository;
 
-    public LessonService(LessonRepository lessonRepository,
-                         CourseRepository courseRepository,
-                         AssignmentRepository assignmentRepository) {
-        this.lessonRepository      = lessonRepository;
-        this.courseRepository      = courseRepository;
-        this.assignmentRepository  = assignmentRepository;
+    public LessonService(LessonRepository lessonRepository) {
+        this.lessonRepository = lessonRepository;
     }
-@Override
+
+    @Override
     public Assignment createAssignment(Long lessonId, Assignment assignment) {
         Lesson lesson = lessonRepository.findById(lessonId)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -46,6 +41,11 @@ public class LessonService implements LessonFacade {
                         new ResourceNotFoundException("Lesson with id=" + lessonId + " not found")
                 );
         return lesson.getAssignments();
+    }
+
+    @Override
+    public void deleteLesson(Long lessonId) {
+        lessonRepository.delete(lessonId);
     }
 
     @Override

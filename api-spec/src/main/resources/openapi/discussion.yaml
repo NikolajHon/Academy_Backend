@@ -786,6 +786,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Assignment'
+  /lessons/{lessonId}:
+    delete:
+      summary: Delete a lesson
+      operationId: deleteLesson
+      tags:
+        - Lesson
+      parameters:
+        - name: lessonId
+          in: path
+          required: true
+          description: ID of the lesson to delete
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Lesson deleted successfully
+        '404':
+          description: Lesson not found
 
   /assignments/{assignmentId}:
     get:
@@ -1476,12 +1495,16 @@ components:
     CreateAssignmentRequest:
       type: object
       required:
+        - title
         - description
         - teacherCode
         - templateCode
-        - expectedOutput
+        - language
         - outputType
       properties:
+        title:
+          type: string
+          description: "title"
         description:
           type: string
           description: "Human-readable description of the task"
@@ -1491,9 +1514,9 @@ components:
         templateCode:
           type: string
           description: "Starter code template for students"
-        expectedOutput:
+        language:
           type: string
-          description: "Expected output for automatic grading"
+          description: "programing language"
         outputType:
           $ref: '#/components/schemas/AssignmentOutputType'
         testCases:
@@ -1522,6 +1545,8 @@ components:
           format: int64
           description: "Unique identifier of the assignment"
         description:
+          type: string
+        title:
           type: string
         teacherCode:
           type: string

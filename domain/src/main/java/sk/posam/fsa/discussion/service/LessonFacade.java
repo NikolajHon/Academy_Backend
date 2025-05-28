@@ -11,7 +11,7 @@ public interface LessonFacade {
 
     Assignment createAssignment(Long lessonId, Assignment assignment);
     List<Assignment> getAssignments(Long lessonId);
-
+    void deleteLesson(Long lessonId);
     VideoMaterial createVideoMaterial(Long lessonId, VideoMaterial videoMaterial);
     List<VideoMaterial> getVideoMaterials(Long lessonId);
     VideoMaterial updateVideoMaterial(Long lessonId, Long videoMaterialId, VideoMaterial videoMaterial);
