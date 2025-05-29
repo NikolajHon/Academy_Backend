@@ -33,7 +33,6 @@ This application will be targeted at the Operating Systems subject commissioned 
 | **Učiteľ**        | Teacher       | Používateľ s oprávnením pridávať nové výučbové materiály, testy, cvičenia a spravovať skupiny študentov. |
 | **Študent**       | Student       | Používateľ, ktorý má prístup k výučbovým materiálom, testom a cvičeniam a môže komunikovať na fóre. |
 | **Lekcia**        | Lesson        | Samostatná tematická jednotka obsahujúca výučbový materiál a súvisiace testy. |
-| **Test**          | Quiz          | Sada otázok, ktoré preverujú znalosti študenta po absolvovaní lekcie. |
 | **Praktická úloha** | Code Challenge | Programátorská úloha v štýle CodeWars, ktorú študent rieši priamo v systéme. |
 | **Fórum**         | Forum         | Diskusný priestor, kde môžu študenti a učitelia komunikovať a pomáhať si s problémami. |
 | **Otázka**        | Question      | Diskusný príspevok, ktorý môže vytvoriť študent alebo učiteľ na fóre. |
@@ -44,6 +43,5 @@ This application will be targeted at the Operating Systems subject commissioned 
 | **Rebríček**      | Ranking       | Zoznam najúspešnejších študentov na základe získaných bodov. |
 | **Skupina**       | Group         | Uzavretý súbor študentov, ktorých spravuje učiteľ a ktorým priraďuje materiály a úlohy. |
 | **Notifikácia**   | Notification  | Upozornenie pre používateľa o nových testoch, úlohách alebo príspevkoch na fóre. |
-| **Konto**         | Account       | Identita používateľa v systéme, používaná na prihlásenie a prístup k obsahu. |
 | **Záznam**        | Recording     | Uložené video z výučby, ktoré môžu študenti sledovať neskôr. |
 | **Test Case**     | Test Case     | Špecifikácia testovacieho scenára, ktorý definuje vstupné dáta, očakávaný výsledok a kroky potrebné na otestovanie funkcionality systému. |
